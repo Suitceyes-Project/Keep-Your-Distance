@@ -1,6 +1,0 @@
-{
-    "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true,
-    "python.linting.pylintPath": "C:\\Python\\Python27\\Scripts\\pylint.exe",
-    "python.pythonPath": "C:\\Python\\Python27\\python.exe"
-}
