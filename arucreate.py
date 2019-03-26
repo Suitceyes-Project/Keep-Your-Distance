@@ -7,6 +7,9 @@ import imageio
 
 class ARU_DICT:
 
+    focal_length = 0.0
+    marker_width = 0.0
+
 # creates a custom aruco dictionary (_aruco_dict) with n aruco markers in marker size s (_aruco_needed) with labels from the given list of labels
     def __init__(self, n=4, s=4, labels=["front", "left", "right", "back"]):
         if len(labels) != n:
@@ -74,7 +77,7 @@ class ARU_DICT:
         #checkimg = cv.imread("_markers/marker_advanced.jpg")
 
         # get camera image for comparison
-        cap = cv.VideoCapture(0)
+        cap = cv.VideoCapture(1) # 0 webcam of laptop
 
         while(True):
             # Capture frame-by-frame
@@ -97,6 +100,7 @@ class ARU_DICT:
                 # print/show image with information about recognized markers
                 #py_mpl.show()
                 print("recognized marker: " + str(ids[i]+1))
+                ARU_DICT.dist_to_marker(corners)
 
             # Display the resulting frame
             cv.imshow('video frame', frame)
@@ -118,4 +122,23 @@ class ARU_DICT:
                 print("Marker", str(i+1), "saved.")
 
 # ----------------------------------------------------------------------------------------------------------------------
+# sets focal length for distance computation
+    def set_focal_length(self, f):
+        ARU_DICT.focal_length = f
 
+    def set_marker_width(self, w=0.08):
+        ARU_DICT.marker_width = w
+
+    def dist_to_marker(corners):
+        if ARU_DICT.focal_length != 0.0 and ARU_DICT.marker_width != 0.0:
+            corner = corners[0][0]
+            dist_x1 = corner[0][0] - corner[1][0]
+            dist_y1 = corner[0][1] - corner[1][1]
+            dist_x2 = corner[0][0] - corner[3][0]
+            dist_y2 = corner[0][1] - corner[3][1]
+            length_px_1 = np.linalg.norm([abs(dist_x1), abs(dist_y1)])
+            length_px_2 = np.linalg.norm([abs(dist_x2), abs(dist_y2)])
+            dist = (ARU_DICT.marker_width * ARU_DICT.focal_length) / max(length_px_1, length_px_2)
+            print("The calculated distance marker - camera is:" + str(dist))
+        else:
+            print("Sorry, focal length or marker width is not yet defined. Please use set_focal_length(f) or set_marker_length(w) to define these parameters")
