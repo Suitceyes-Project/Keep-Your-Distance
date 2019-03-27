@@ -94,9 +94,9 @@ class ARU_DICT:
                 py_mpl.imshow(frame_markers, origin = "upper")
                 for i in range(0, len(ids)):
                     c = corners[i][0]
-                    marker_center = [[c[:, 0].mean()], [c[:, 1].mean()]]
-                    py_mpl.plot(marker_center.x, marker_center.y, "+", label="Marker = {0}".format(ids[i]+1))
-                    #py_mpl.plot([c[:, 0].mean()], [c[:, 1].mean()], "+", label="Marker = {0}".format(ids[i]+1))
+                    #marker_center = [[c[:, 0].mean()], [c[:, 1].mean()]]
+                    #py_mpl.plot(marker_center.x, marker_center.y, "+", label="Marker = {0}".format(ids[i]+1))
+                    py_mpl.plot([c[:, 0].mean()], [c[:, 1].mean()], "+", label="Marker = {0}".format(ids[i]+1))
                 py_mpl.legend()
                 py_mpl.axis("off")
 
@@ -105,7 +105,7 @@ class ARU_DICT:
                 print("recognized marker: " + str(ids[i]+1))
 
                 ARU_DICT.dist_to_marker(corners)
-                ARU_DICT.angle_to_marker(marker_center)
+                #ARU_DICT.angle_to_marker(marker_center)
 
             # Display the resulting frame
             cv.imshow('video frame', frame)
@@ -143,7 +143,7 @@ class ARU_DICT:
 
 # ----------------------------------------------------------------------------------------------------------------------
 # approximates the distance between a detected marker and the camera
-    def dist_to_marker(self, corners):
+    def dist_to_marker(corners):
         if ARU_DICT.focal_length != 0.0 and ARU_DICT.marker_width != 0.0:
             corner = corners[0][0]
             dist_x1 = corner[0][0] - corner[1][0]

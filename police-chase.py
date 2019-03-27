@@ -10,7 +10,7 @@ police_chase_dic = arucreate.ARU_DICT()
 
 police_chase_dic.set_focal_length(focal_length)
 police_chase_dic.set_marker_width()
-police_chase_dic.cam_center(cam_center)
+#police_chase_dic.cam_center(cam_center)
 
 #police_chase_dic.save_aruco_images()
 #police_chase_dic.lookup_aruco_nr(4)

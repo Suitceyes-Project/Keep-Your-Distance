@@ -7,4 +7,7 @@
 	- numpy
 	- opencv-python
 	- opencv-contrib-python
+	- FEHLENDE LIBS
 3. run / build the app
+
+WAS BRAUHCT MAN DAMIT ES LÄUFT
