@@ -28,8 +28,9 @@ def fast_calibrate():
     check_calibration(matrix, dist)
 
     focal_length = matrix[0][0]
+    cam_center = [matrix[2][0], matrix[2][1]]
 
-    return focal_length
+    return focal_length, cam_center
 
 # handles camera calibration process
 def calibrate():
@@ -51,8 +52,9 @@ def calibrate():
     check_calibration(matrix, dist)
 
     focal_length = matrix[0][0]
+    cam_center = [matrix[2][0], matrix[2][1]]
 
-    return focal_length
+    return focal_length, cam_center
 
 # ----------------------------------------------------------------------------------------------------------------------
 # captures images for calibration and saves them to _calibration

@@ -9,6 +9,7 @@ class ARU_DICT:
 
     focal_length = 0.0
     marker_width = 0.0
+    cam_center = [0, 0]
 
 # creates a custom aruco dictionary (_aruco_dict) with n aruco markers in marker size s (_aruco_needed) with labels from the given list of labels
     def __init__(self, n=4, s=4, labels=["front", "left", "right", "back"]):
@@ -93,14 +94,18 @@ class ARU_DICT:
                 py_mpl.imshow(frame_markers, origin = "upper")
                 for i in range(0, len(ids)):
                     c = corners[i][0]
-                    py_mpl.plot([c[:, 0].mean()], [c[:, 1].mean()], "+", label="Marker = {0}".format(ids[i]+1))
+                    marker_center = [[c[:, 0].mean()], [c[:, 1].mean()]]
+                    py_mpl.plot(marker_center.x, marker_center.y, "+", label="Marker = {0}".format(ids[i]+1))
+                    #py_mpl.plot([c[:, 0].mean()], [c[:, 1].mean()], "+", label="Marker = {0}".format(ids[i]+1))
                 py_mpl.legend()
                 py_mpl.axis("off")
 
                 # print/show image with information about recognized markers
                 #py_mpl.show()
                 print("recognized marker: " + str(ids[i]+1))
+
                 ARU_DICT.dist_to_marker(corners)
+                ARU_DICT.angle_to_marker(marker_center)
 
             # Display the resulting frame
             cv.imshow('video frame', frame)
@@ -126,10 +131,19 @@ class ARU_DICT:
     def set_focal_length(self, f):
         ARU_DICT.focal_length = f
 
+# ----------------------------------------------------------------------------------------------------------------------
+# sets width of the markers for distance computation
     def set_marker_width(self, w=0.08):
         ARU_DICT.marker_width = w
 
-    def dist_to_marker(corners):
+# ----------------------------------------------------------------------------------------------------------------------
+# sets camera center from camera calibration martix for computation of the angle between marker and camera
+    def set_cam_center(self, cx, cy):
+        ARU_DICT.cam_center = [cx, cy]
+
+# ----------------------------------------------------------------------------------------------------------------------
+# approximates the distance between a detected marker and the camera
+    def dist_to_marker(self, corners):
         if ARU_DICT.focal_length != 0.0 and ARU_DICT.marker_width != 0.0:
             corner = corners[0][0]
             dist_x1 = corner[0][0] - corner[1][0]
@@ -142,3 +156,17 @@ class ARU_DICT:
             print("The calculated distance marker - camera is:" + str(dist))
         else:
             print("Sorry, focal length or marker width is not yet defined. Please use set_focal_length(f) or set_marker_length(w) to define these parameters")
+
+# ----------------------------------------------------------------------------------------------------------------------
+# approximates the angle between the center of a detected marker and the camera (in radians and degrees)
+    def angle_to_marker(self, m_center):
+        # brings points on the same line, to only calculate the horizontal angle
+        ARU_DICT.cam_center = [ARU_DICT.cam_center.x, m_center.y]
+
+        dist_x = ARU_DICT.cam_center.x - m_center.x
+        dist_y = ARU_DICT.cam_center.y - m_center.y
+
+        angle_rad = np.arctan2(dist_x, dist_y)
+        angle_deg = np.rad2deg(angle_rad)
+
+        print("The angle between the marker's center and the camera is: ", angle_deg)
