@@ -6,8 +6,19 @@
 2. install via pip
 	- numpy
 	- opencv-python
+	- opencv.aruco
 	- opencv-contrib-python
-	- FEHLENDE LIBS
-3. run / build the app
+	- matplotlib
+    - matplotlib.pyplot
+    - imageio
+    - PIL.Image
+    - os
+    - os.path
 
-WAS BRAUHCT MAN DAMIT ES LÄUFT
+3. run / build the app:
+    - initiate game:
+      * use "camera_calibration.fast_calibrate()", if calibration images with respective cam are already saved in "_calibration" folder
+      * use "camera_calibration.calibrate()", if calibration needs to be done completely (i.e., new camera, no images saved in "_calibration" folder)
+      * choose your own game_duration (length of pursuit)
+
+    - game loop

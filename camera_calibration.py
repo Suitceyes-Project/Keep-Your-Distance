@@ -28,7 +28,7 @@ def fast_calibrate():
     check_calibration(matrix, dist)
 
     focal_length = matrix[0][0]
-    cam_center = [matrix[2][0], matrix[2][1]]
+    cam_center = [matrix[0][2], matrix[1][2]]
 
     return focal_length, cam_center
 
@@ -52,14 +52,14 @@ def calibrate():
     check_calibration(matrix, dist)
 
     focal_length = matrix[0][0]
-    cam_center = [matrix[2][0], matrix[2][1]]
+    cam_center = [matrix[0][2], matrix[1][2]]
 
     return focal_length, cam_center
 
 # ----------------------------------------------------------------------------------------------------------------------
 # captures images for calibration and saves them to _calibration
 def capture_image():
-    cam = cv.VideoCapture(1) # 0 webcam of laptop
+    cam = cv.VideoCapture(1) # 0 webcam of laptop # 1 extern cam
     cv.namedWindow("Calibrate Camera")
     images = []
     img_counter = 0

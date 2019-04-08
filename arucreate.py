@@ -78,43 +78,37 @@ class ARU_DICT:
         #checkimg = cv.imread("_markers/marker_advanced.jpg")
 
         # get camera image for comparison
-        cap = cv.VideoCapture(1) # 0 webcam of laptop
+        cap = cv.VideoCapture(1) # 0 webcam of laptop # 1 extern cam
 
-        while(True):
-            # Capture frame-by-frame
-            ret, frame = cap.read()
+        #while(True):
+        # Capture frame-by-frame
+        ret, frame = cap.read()
 
-            parameters = aruco.DetectorParameters_create()
-            corners, ids, rejectedImgPoints = aruco.detectMarkers(frame, self._aruco_dict, parameters=parameters)
+        parameters = aruco.DetectorParameters_create()
+        corners, ids, rejectedImgPoints = aruco.detectMarkers(frame, self._aruco_dict, parameters=parameters)
 
-            frame_markers = aruco.drawDetectedMarkers(frame, corners, ids)
+        frame_markers = aruco.drawDetectedMarkers(frame, corners, ids)
 
-            if ids is not None:
-                py_mpl.figure()
-                py_mpl.imshow(frame_markers, origin = "upper")
-                for i in range(0, len(ids)):
-                    c = corners[i][0]
-                    #marker_center = [[c[:, 0].mean()], [c[:, 1].mean()]]
-                    #py_mpl.plot(marker_center.x, marker_center.y, "+", label="Marker = {0}".format(ids[i]+1))
-                    py_mpl.plot([c[:, 0].mean()], [c[:, 1].mean()], "+", label="Marker = {0}".format(ids[i]+1))
-                py_mpl.legend()
-                py_mpl.axis("off")
+        if ids is not None:
+            for i in range(0, len(ids)):
+                c = corners[i][0]
+                marker_center = [c[:, 0].mean(), c[:, 1].mean()]
 
-                # print/show image with information about recognized markers
-                #py_mpl.show()
-                print("recognized marker: " + str(ids[i]+1))
+            print("recognized marker: " + str(ids[i]+1))
+            marker = ids[i]+1
+            distance = ARU_DICT.dist_to_marker(corners)
+            angle = ARU_DICT.angle_to_marker(marker_center)
 
-                ARU_DICT.dist_to_marker(corners)
-                #ARU_DICT.angle_to_marker(marker_center)
-
-            # Display the resulting frame
-            cv.imshow('video frame', frame)
-            if cv.waitKey(1) & 0xFF == ord('q'):
-                break
+        # Display the resulting frame
+        cv.imshow('video frame', frame)
+        if cv.waitKey(1) & 0xFF == ord('q'):
+            return
 
         # When everything done, release the capture
         cap.release()
         cv.destroyAllWindows()
+
+        return marker, distance, angle
 
 # ----------------------------------------------------------------------------------------------------------------------
 # saves all needed (_aruco_needed) markers from custom dictionary (_aruco_dict) to the folder _markers
@@ -138,8 +132,8 @@ class ARU_DICT:
 
 # ----------------------------------------------------------------------------------------------------------------------
 # sets camera center from camera calibration martix for computation of the angle between marker and camera
-    def set_cam_center(self, cx, cy):
-        ARU_DICT.cam_center = [cx, cy]
+    def set_cam_center(self, c):
+        ARU_DICT.cam_center = [c[0], c[1]]
 
 # ----------------------------------------------------------------------------------------------------------------------
 # approximates the distance between a detected marker and the camera
@@ -154,19 +148,21 @@ class ARU_DICT:
             length_px_2 = np.linalg.norm([abs(dist_x2), abs(dist_y2)])
             dist = (ARU_DICT.marker_width * ARU_DICT.focal_length) / max(length_px_1, length_px_2)
             print("The calculated distance marker - camera is:" + str(dist))
+            return dist
         else:
             print("Sorry, focal length or marker width is not yet defined. Please use set_focal_length(f) or set_marker_length(w) to define these parameters")
+            return -1
 
 # ----------------------------------------------------------------------------------------------------------------------
 # approximates the angle between the center of a detected marker and the camera (in radians and degrees)
-    def angle_to_marker(self, m_center):
-        # brings points on the same line, to only calculate the horizontal angle
-        ARU_DICT.cam_center = [ARU_DICT.cam_center.x, m_center.y]
+    def angle_to_marker(m_center):
 
-        dist_x = ARU_DICT.cam_center.x - m_center.x
-        dist_y = ARU_DICT.cam_center.y - m_center.y
+        # calculates length of opposite leg
+        dist_x = float(m_center[0]) - float(ARU_DICT.cam_center[0])
 
-        angle_rad = np.arctan2(dist_x, dist_y)
-        angle_deg = np.rad2deg(angle_rad)
+        # calculates angle from center-vertical to shown marker (1. quadrant positive, 2. quadrant negative)
+        alpha_rad = np.arctan(dist_x/ARU_DICT.focal_length)
+        alpha_deg = np.degrees(alpha_rad)
 
-        print("The angle between the marker's center and the camera is: ", angle_deg)
+        print("The angle between the marker's center and the camera is: ", alpha_deg)
+        return alpha_deg
