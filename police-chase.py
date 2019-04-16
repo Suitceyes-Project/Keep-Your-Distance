@@ -1,23 +1,25 @@
 import arucreate
 import camera_calibration
+import time
 
 # INITIATE GAME
 # calibrates new camera with NO existing images, and determines "focal_length" and "cam_center"
-#focal_length, cam_center = camera_calibration.calibrate()
+focal_length, cam_center = camera_calibration.calibrate()
 # _________________________________________ CHECK AGAIN ________________________________________________________________
 
 # calibrates known camera with existing images, and determines "focal_length" and "cam_center"
-focal_length, cam_center = camera_calibration.fast_calibrate()
+#focal_length, cam_center = camera_calibration.fast_calibrate()
 
 # initiate aruco library with camera parameters
 police_chase_dic = arucreate.ARU_DICT()
-police_chase_dic.set_marker_width()
+police_chase_dic.set_marker_width(0.08) # in meter
 police_chase_dic.set_focal_length(focal_length)
 police_chase_dic.set_cam_center(cam_center)
 
 game_duration = 300 # 5 minutes
 delta = 0.0
-time_played = 0.0
+sleep_time = 0.5
+starting_time = time.time()
 game_running = True
 
 # GAME LOOP
@@ -26,7 +28,8 @@ while (game_running):
     delta += 0.01
 
     # detect marker
-    if(delta > 0.5):
+    if(delta > sleep_time):
+        # marker: int 1 - 4, dist: float in cm, angle: float in degree
         marker, dist, angle = police_chase_dic.detect_aruco()
 
         # check messages to actuators (stop, turn or just continue)
@@ -53,12 +56,10 @@ while (game_running):
         delta = 0.0
 
     # GAME END
+    time_played = time.time() - starting_time
     if time_played > game_duration:
         time_played = 0.0
         delta = 0.0
         game_running = False
 
-
-#police_chase_dic.save_aruco_images()
-#police_chase_dic.lookup_aruco_nr(4)
 

@@ -3,7 +3,6 @@ import cv2.aruco as aruco
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as py_mpl
-import imageio
 
 class ARU_DICT:
 
@@ -52,33 +51,11 @@ class ARU_DICT:
         py_mpl.show()
 
 # ----------------------------------------------------------------------------------------------------------------------
-# find aruco marker i with its label and displays it
-    def lookup_aruco_nr(self, i):
-        if i == 1:
-            frame = py_mpl.figure("Aruco Nr 1 -" + self._aruco_labels[i-1])
-        elif i == 2:
-            frame = py_mpl.figure("Aruco Nr 2 -" + self._aruco_labels[i-1])
-        elif i == 3:
-            frame = py_mpl.figure("Aruco Nr 3 -" + self._aruco_labels[i-1])
-        elif i == 4:
-            frame = py_mpl.figure("Aruco Nr 4 -" + self._aruco_labels[i-1])
-        else:
-            print("This marker is unknown for this application. Known marker ids: \n id_1: front \n id_2: left \n id_3: right \n id_4: back")
-            return
-
-        img = aruco.drawMarker(self._aruco_dict, (i - 1), 500)
-        py_mpl.imshow(img, cmap=mpl.cm.gray)
-        py_mpl.axis("off")
-        py_mpl.show()
-
-# ----------------------------------------------------------------------------------------------------------------------
 # detects markers from respective custom dictionary in an image or captured video and prints out the information
     def detect_aruco(self):
-        # get img for comparison
-        #checkimg = cv.imread("_markers/marker_advanced.jpg")
 
         # get camera image for comparison
-        cap = cv.VideoCapture(1) # 0 webcam of laptop # 1 extern cam
+        cap = cv.VideoCapture(1) # 0 webcam of laptop # 1 external cam
 
         #while(True):
         # Capture frame-by-frame
@@ -111,23 +88,13 @@ class ARU_DICT:
         return marker, distance, angle
 
 # ----------------------------------------------------------------------------------------------------------------------
-# saves all needed (_aruco_needed) markers from custom dictionary (_aruco_dict) to the folder _markers
-    def save_aruco_images(self):
-
-        if isinstance(self._aruco_needed, int):
-            for i in range(0, self._aruco_needed):
-                img = aruco.drawMarker(self._aruco_dict, i, 500)
-                imageio.imwrite("_markers/marker_"+str(i+1)+".jpg", img)
-                print("Marker", str(i+1), "saved.")
-
-# ----------------------------------------------------------------------------------------------------------------------
 # sets focal length for distance computation
     def set_focal_length(self, f):
         ARU_DICT.focal_length = f
 
 # ----------------------------------------------------------------------------------------------------------------------
 # sets width of the markers for distance computation
-    def set_marker_width(self, w=0.08):
+    def set_marker_width(self, w):
         ARU_DICT.marker_width = w
 
 # ----------------------------------------------------------------------------------------------------------------------

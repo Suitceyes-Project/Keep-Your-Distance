@@ -13,12 +13,7 @@ board = aruco.CharucoBoard_create(7, 5, 1.1, 1, predef_aruco_dict)
 
 # calibrates camera if aruco-board images are already available
 def fast_calibrate():
-    images = []
-    path = "_calibration/"
-    for f in os.listdir(path):
-        ext = os.path.splitext(f)[1]
-        if ext.lower().endswith(".png"):
-            images.append(Image.open(os.path.join(path, f)))
+    images = load_images
 
     # initiates next calibration steps
     allCorners, allIds, imsize = calibrate_arucos(images)
@@ -44,38 +39,44 @@ def calibrate():
     py_mpl.show()
 
     # initiates next calibration steps
-    images = capture_image()
-    allCorners, allIds, imsize = calibrate_arucos(images)
-    ret, matrix, dist, rot_vect, trans_vect = calibrate_camera(allCorners, allIds, imsize)
-
-    # visually checks calibration
-    check_calibration(matrix, dist)
-
-    focal_length = matrix[0][0]
-    cam_center = [matrix[0][2], matrix[1][2]]
+    capture_image()
+    focal_length, cam_center = fast_calibrate()
 
     return focal_length, cam_center
 
 # ----------------------------------------------------------------------------------------------------------------------
+# reads images from folder "_calibration"
+def load_images():
+    images = []
+    path = "_calibration/"
+    for f in os.listdir(path):
+        ext = os.path.splitext(f)[1]
+        if ext.lower().endswith(".png"):
+            images.append(Image.open(os.path.join(path, f)))
+
+    return images
+
+# ----------------------------------------------------------------------------------------------------------------------
 # captures images for calibration and saves them to _calibration
 def capture_image():
-    cam = cv.VideoCapture(1) # 0 webcam of laptop # 1 extern cam
+    cam = cv.VideoCapture(0) # 0 webcam of laptop # 1 external cam
     cv.namedWindow("Calibrate Camera")
     images = []
     img_counter = 0
+    print("Please take several images of different angles of the Aruco-Board using your camera. Press space to take a photo.")
 
     while True:
         ret, frame = cam.read()
         cv.imshow("Calibrate Camera", frame)
-        print("Please take several images of different angles of the Aruco-Board using your camera. Press space to take a photo.")
         if not ret:
             break
         k = cv.waitKey(1)
 
         # quit on q
         if k & 0xFF == ord('q'):
-
+            print("Image capturing will be closed")
             break
+
         elif k%256 == 32:
             # SPACE pressed
             img_name = "camera_calibration_{}.png".format(img_counter)
@@ -86,8 +87,6 @@ def capture_image():
 
     cam.release()
     cv.destroyAllWindows()
-
-    return images
 
 # ----------------------------------------------------------------------------------------------------------------------
 # detects aruco markers in the calibration images and calculates corners, ids
@@ -105,7 +104,7 @@ def calibrate_arucos(images):
     for im in images:
         print("=> Processing image {0}".format(im))
         # import image in grayscale
-        frame = cv.imread(im.filename, 0)
+        frame = cv.imread(im.filename, 0) # HIER CRASHT ES
         corners, ids, rejectedImgPoints = cv.aruco.detectMarkers(frame, predef_aruco_dict)
 
         if len(corners) > 0:
