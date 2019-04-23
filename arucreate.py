@@ -3,35 +3,33 @@ import cv2.aruco as aruco
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as py_mpl
+import csv
+import time
 
 class ARU_DICT:
 
     focal_length = 0.0
     marker_width = 0.0
     cam_center = [0, 0]
+    cap = cv.VideoCapture(1) # 0 webcam of laptop # 1 external cam
+    parameters = aruco.DetectorParameters_create()
+    name_logfile = 'logfile.csv'
 
 # creates a custom aruco dictionary (_aruco_dict) with n aruco markers in marker size s (_aruco_needed) with labels from the given list of labels
     def __init__(self, n=4, s=4, labels=["front", "left", "right", "back"]):
         if len(labels) != n:
             print("There are " + str(len(labels)) + " labels found for " + str(n) + " markers. Please insert one label for each marker.")
             return
-        '''
-        if s == 4:
-            dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
-        elif s == 5:
-            dict = aruco.getPredefinedDictionary(aruco.DICT_5X5_50)
-        elif s == 6:
-            dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_50)
-        elif s == 7:
-            dict = aruco.getPredefinedDictionary(aruco.DICT_7X7_50)
-        else:
-            print("no useful marker size entered! Choose marker size 4, 5, 6 or 7")
-            return
-        '''
 
         self._aruco_dict = aruco.custom_dictionary(n, s)
         self._aruco_needed = n
         self._aruco_labels = labels
+
+        self.name_logfile = 'logfile_{}.csv'.format(self.get_time_stamp("init"))
+        with open(self.name_logfile, mode='w') as logfile:
+            writer = csv.writer(logfile)
+            writer.writerow(['timestamp', 'marker nr', 'distance', 'angle'])
+            writer.writerow([self.get_time_stamp(), 'init', 'init', 'init'])
 
         self.show_arucos()
 
@@ -54,36 +52,33 @@ class ARU_DICT:
 # detects markers from respective custom dictionary in an image or captured video and prints out the information
     def detect_aruco(self):
 
-        # get camera image for comparison
-        cap = cv.VideoCapture(1) # 0 webcam of laptop # 1 external cam
+        marker = 0
+        distance = 0.0
+        angle = 180.00
 
-        #while(True):
         # Capture frame-by-frame
-        ret, frame = cap.read()
+        ret, frame = self.cap.read()
 
-        parameters = aruco.DetectorParameters_create()
-        corners, ids, rejectedImgPoints = aruco.detectMarkers(frame, self._aruco_dict, parameters=parameters)
+        corners, ids, rejectedImgPoints = aruco.detectMarkers(frame, self._aruco_dict, parameters=self.parameters)
 
-        frame_markers = aruco.drawDetectedMarkers(frame, corners, ids)
+        aruco.drawDetectedMarkers(frame, corners, ids)
 
         if ids is not None:
             for i in range(0, len(ids)):
                 c = corners[i][0]
                 marker_center = [c[:, 0].mean(), c[:, 1].mean()]
 
-            print("recognized marker: " + str(ids[i]+1))
             marker = ids[i]+1
+            print("recognized marker: " + str(marker))
             distance = ARU_DICT.dist_to_marker(corners)
             angle = ARU_DICT.angle_to_marker(marker_center)
 
-        # Display the resulting frame
-        cv.imshow('video frame', frame)
-        if cv.waitKey(1) & 0xFF == ord('q'):
-            return
+            with open(self.name_logfile, mode='a') as logfile:
+                writer = csv.writer(logfile)
+                writer.writerow([self.get_time_stamp(), str(marker), str(distance), str(angle)])
 
-        # When everything done, release the capture
-        cap.release()
-        cv.destroyAllWindows()
+            # Display the resulting frame
+            cv.imshow('video frame', frame)
 
         return marker, distance, angle
 
@@ -118,7 +113,7 @@ class ARU_DICT:
             return dist
         else:
             print("Sorry, focal length or marker width is not yet defined. Please use set_focal_length(f) or set_marker_length(w) to define these parameters")
-            return -1
+            return -1.0
 
 # ----------------------------------------------------------------------------------------------------------------------
 # approximates the angle between the center of a detected marker and the camera (in radians and degrees)
@@ -133,3 +128,28 @@ class ARU_DICT:
 
         print("The angle between the marker's center and the camera is: ", alpha_deg)
         return alpha_deg
+
+# ----------------------------------------------------------------------------------------------------------------------
+# returns current time stamp in format: 2019-04-20 12:25:25
+    @staticmethod
+    def get_time_stamp(S=""):
+        ts = time.gmtime()
+
+        if S != "":
+            # returns current time stamp for naming the logfile: 04-20_12-25
+            timestamp = time.strftime("%m-%d_%H-%M", ts)
+        else:
+            timestamp = time.strftime("%Y-%m-%d %H:%M:%S", ts)
+
+        return timestamp
+
+# ----------------------------------------------------------------------------------------------------------------------
+# closes video capture and logfile
+    def close_aruco_detection(self):
+        self.cap.release()
+        cv.destroyAllWindows()
+
+        with open(self.name_logfile, mode='a') as logfile:
+            writer = csv.writer(logfile)
+            writer.writerow([self.get_time_stamp(),'end', 'end', 'end'])
+

@@ -13,7 +13,7 @@ board = aruco.CharucoBoard_create(7, 5, 1.1, 1, predef_aruco_dict)
 
 # calibrates camera if aruco-board images are already available
 def fast_calibrate():
-    images = load_images
+    images = load_images()
 
     # initiates next calibration steps
     allCorners, allIds, imsize = calibrate_arucos(images)
@@ -59,7 +59,7 @@ def load_images():
 # ----------------------------------------------------------------------------------------------------------------------
 # captures images for calibration and saves them to _calibration
 def capture_image():
-    cam = cv.VideoCapture(0) # 0 webcam of laptop # 1 external cam
+    cam = cv.VideoCapture(1) # 0 webcam of laptop # 1 external cam
     cv.namedWindow("Calibrate Camera")
     images = []
     img_counter = 0

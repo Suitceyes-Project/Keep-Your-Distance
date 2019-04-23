@@ -14,6 +14,7 @@
     - os
     - os.path
     - time
+    - csv
 
 3. run / build the app:
     - if you want to use webcam of laptop (NO external device)
