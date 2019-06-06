@@ -30,5 +30,22 @@
       * choose your own game_duration (length of pursuit)
       * choose your own sleep_time: waiting intervall until next aruco marker detection
       
-## bluepy
+## Raspberry Pi
+Since we're using a virtual environment you have to enter the following commands before running any python files, otherwise it won't find the required modules:
+~~~
+source ~/.profile
+workon cv
+~~~
+
+You should then see:
+~~~
+(cv) pi@raspberrypi: ~/
+~~~
+
+For bluepy to work correctly the following commands maybe also have to be executed:
+~~~
+sudo hciconfig hci0 down
+sudo hciconfig hci0 up
+~~~
+
 
