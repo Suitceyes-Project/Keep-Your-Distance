@@ -3,7 +3,7 @@
 ## Setup
 
 1. install python
-2. install via pip
+2. install via pip3
 	- numpy
 	- opencv-python
 	- opencv.aruco
@@ -15,6 +15,7 @@
     - os.path
     - time
     - csv
+    - bluepy ("https://github.com/IanHarvey/bluepy")
 
 3. run / build the app:
     - if you want to use webcam of laptop (NO external device)
@@ -28,3 +29,23 @@
       * change value set_marker_width, if you choose a different charuco board (width of printed aruco markers on chessboard)
       * choose your own game_duration (length of pursuit)
       * choose your own sleep_time: waiting intervall until next aruco marker detection
+      
+## Raspberry Pi
+Since we're using a virtual environment you have to enter the following commands before running any python files, otherwise it won't find the required modules:
+~~~
+source ~/.profile
+workon cv
+~~~
+
+You should then see:
+~~~
+(cv) pi@raspberrypi: ~/
+~~~
+
+For bluepy to work correctly the following commands maybe also have to be executed:
+~~~
+sudo hciconfig hci0 down
+sudo hciconfig hci0 up
+~~~
+
+
