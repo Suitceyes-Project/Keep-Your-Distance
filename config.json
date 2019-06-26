@@ -15,5 +15,10 @@
     "4" : 90,
     "5" : 30
   },
-  "log_enabled" : false
+  "log_enabled" : false,
+  "markerWidth" : 0.08,
+  "camera" : 0,
+  "arucoDictionary" : 0,
+  "gameDuration" : 10000,
+  "timeStep" : 0.16
 }

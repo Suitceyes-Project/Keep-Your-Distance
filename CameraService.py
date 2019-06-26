@@ -7,7 +7,7 @@ class CameraService:
         self._focal_length, self._cam_center, self._cam_matrix, self._dist_coeffs = camera_calibration.fast_calibrate()              
         
     def __enter__(self):
-        self._cap = cv.VideoCapture(int(cfg.get_camera())) # 0 webcam of laptop # 1 external cam  
+        self._cap = cv.VideoCapture(cfg.camera) # 0 webcam of laptop # 1 external cam  
         return self
         
     def __exit__(self, exc_type, exc_value, traceback):

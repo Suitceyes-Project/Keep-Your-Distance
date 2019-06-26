@@ -10,7 +10,7 @@ class MarkerDetectionSystem:
     def __init__(self, marker_service, camera_service):
         self._marker_service = marker_service
         self._camera_service = camera_service
-        self._aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_50)
+        self._aruco_dict = cfg.arucoDictionary
     
     def update(self):
         marker = 0
@@ -50,7 +50,7 @@ class MarkerDetectionSystem:
                  
 
     def _dist_to_marker(self, corner):
-        marker_width = cfg.get_marker_width()
+        marker_width = cfg.markerWidth
         focal_length = self._camera_service.get_focal_length()
         if focal_length != 0.0 and marker_width != 0.0:
             dist_x1 = corner[0][0] - corner[1][0]
