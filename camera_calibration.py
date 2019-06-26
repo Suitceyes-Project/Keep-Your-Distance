@@ -25,7 +25,7 @@ def fast_calibrate():
     focal_length = matrix[0][0]
     cam_center = [matrix[0][2], matrix[1][2]]
 
-    return focal_length, cam_center
+    return focal_length, cam_center, matrix, dist
 
 # handles camera calibration process
 def calibrate():

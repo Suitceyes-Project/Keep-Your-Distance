@@ -20,10 +20,16 @@ class MarkerService:
         self._angles[marker_id] = angle
         return
     
+    def get_angle(self, marker_id):
+        return self._angles[marker_id]
+    
     def get_corners(self, marker_id):
         if marker_id in self._corners:
             return self._corners[marker_id]
         return None
+    
+    def get_distance(self, marker_id):
+        return self._distances[marker_id]
     
     def set_forward(self, marker_id, forward):
         self._forward[marker_id] = forward
