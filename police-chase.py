@@ -28,12 +28,12 @@ game_running = True
 vest = VestDevice("10:d0:7a:16:b8:d7")
 
 # make sure camera is released
-with CameraService() as camera_service:
+with CameraService() as camera_service, LoggingSystem(marker_service) as logging_system:
 
     # create systems
     marker_detection_system = MarkerDetectionSystem(marker_service, camera_service)
     camera_rendering_system = CameraRenderingSystem(camera_service)
-    logging_system = LoggingSystem(marker_service)
+
     # Create controller for controlling vest logic
     #actuator_controller = ActuatorController(vest, police_chase_dic)
     try:        
@@ -71,6 +71,3 @@ with CameraService() as camera_service:
     finally:
         vest.mute()
         camera_rendering_system.dispose()
-        logging_system.dispose()
-
-

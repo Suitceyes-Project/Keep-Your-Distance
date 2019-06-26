@@ -9,11 +9,20 @@ class LoggingSystem:
             return
         
         self._marker_service = marker_service
-        self.name_logfile = 'logfile_{}.csv'.format(self.get_time_stamp("init"))
-        with open(self.name_logfile, mode='w') as logfile:
-            writer = csv.writer(logfile)
-            writer.writerow(['timestamp', 'marker nr', 'distance', 'angle'])
-            writer.writerow([self.get_time_stamp(), 'init', 'init', 'init'])
+        self._name_logfile = 'logfile_{}.csv'.format(self.get_time_stamp("init"))
+            
+    def __enter__(self):
+        self._logfile = open(self._name_logfile, mode='w')
+        self._writer = csv.writer(self._logfile)            
+        self._writer.writerow(['timestamp', 'marker nr', 'distance', 'angle'])
+        self._write_row('init', 'init', 'init')
+        return self
+        
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._dispose()
+        
+    def _write_row(self, marker, distance, angle):
+        self._writer.writerow([self.get_time_stamp(), marker, distance, angle])
     
     def update(self):
         if cfg.isLogEnabled == False:
@@ -24,18 +33,16 @@ class LoggingSystem:
             return
         
         for i in range(0, len(markers)):
-            with open(self.name_logfile, mode='a') as logfile:
-                writer = csv.writer(logfile)
-                distance = self._marker_service.get_distance(markers[i])
-                angle = self._marker_service.get_angle(markers[i])
-                writer.writerow([self.get_time_stamp(), str(markers[i]), str(distance), str(angle)])
+            distance = self._marker_service.get_distance(markers[i])
+            angle = self._marker_service.get_angle(markers[i])
+            self._write_row(str(markers[i]), str(distance), str(angle))
                 
-    def dispose(self):
+    def _dispose(self):
         if cfg.isLogEnabled == False:
             return
-        with open(self.name_logfile, mode='a') as logfile:
-            writer = csv.writer(logfile)
-            writer.writerow([self.get_time_stamp(),'end', 'end', 'end'])
+        self._write_row('end', 'end', 'end')
+        self._logfile.close()
+        
     
     # ----------------------------------------------------------------------------------------------------------------------
     # returns current time stamp in format: 2019-04-20 12:25:25
