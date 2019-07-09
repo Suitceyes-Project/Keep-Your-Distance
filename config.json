@@ -22,6 +22,6 @@
   "gameDuration" : 10000,
   "timeStep" : 0.16,
   "device": "10:d0:7a:16:b8:d7",
-  "minDistance" : 2.0,
-  "maxDistance" : 5.0
+  "minDistance" : 0.3,
+  "maxDistance" : 0.8
 }

@@ -8,6 +8,7 @@ from CameraService import CameraService
 from MarkerDetectionSystem import MarkerDetectionSystem
 from CameraRenderingSystem import CameraRenderingSystem
 from LoggingSystem import LoggingSystem
+from VibrationNavigationSystem import VibrationNavigationSystem
 
 # create services
 marker_service = MarkerService()
@@ -28,6 +29,7 @@ with CameraService() as camera_service, \
 
     # create systems
     marker_detection_system = MarkerDetectionSystem(marker_service, camera_service)
+    vibration_navigation_system = VibrationNavigationSystem(vest, marker_service)
 
     try:        
         print("Game running...")
@@ -40,6 +42,7 @@ with CameraService() as camera_service, \
             if(delta > sleep_time):
                 marker_detection_system.update()
                 camera_rendering_system.update()
+                vibration_navigation_system.update()
                 logging_system.update()
 
                 #if dist != -1.0 and dist != 0.0:
