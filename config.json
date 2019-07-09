@@ -8,9 +8,9 @@
   },
   "actuators":
   {
-    "0" : 330,
-    "1" : 270,
-    "2" : 210,
+    "0" : -30,
+    "1" : -90,
+    "2" : -150,
     "3" : 150,
     "4" : 90,
     "5" : 30
@@ -26,5 +26,42 @@
   "maxDistance" : 0.8,
   "frequencyClose": 10,
   "frequencyOptimal": 100,
-  "frequencyFar": 255
+  "frequencyFar": 255,
+  "actuatorRanges":[
+      {
+        "start" : -180.0,
+        "end" : -75.0,
+        "actuators" : [1]
+      },
+      {
+        "start" : -75.0,
+        "end" : -45.0,
+        "actuators" : [0,1]
+      },
+      {
+        "start" : -45.0,
+        "end" : -15.0,
+        "actuators" : [0]
+      },
+      {
+        "start" : -15.0,
+        "end" : 15.0,
+        "actuators" : [0,5]
+      },
+      {
+        "start" : 15.0,
+        "end": 45.0,
+        "actuators": [5]
+      },
+      {
+        "start" : 45.0,
+        "end": 75.0,
+        "actuators": [5,4]
+      },
+      {
+        "start" : 75.0,
+        "end": 180.0,
+        "actuators": [4]
+      }
+    ]
 }

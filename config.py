@@ -16,6 +16,7 @@ with open("config.json", "r") as json_file:
     frequencyClose = data["frequencyClose"]
     frequencyOptimal = data["frequencyOptimal"]
     frequencyFar = data["frequencyFar"]
+    actuatorRanges = data["actuatorRanges"]
 
 def get_marker_id(side):
     return data["markers"][side]

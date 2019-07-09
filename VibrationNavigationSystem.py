@@ -1,4 +1,5 @@
 import config as cfg
+import numpy as np
 
 class VibrationNavigationSystem:
     
@@ -14,9 +15,52 @@ class VibrationNavigationSystem:
         self._regulate_frequency()
     
     def _regulate_direction(self):
-        for index in cfg.actuators:
-            self._device.setPin(int(index), 255)
+        # get all markers
+        markers = self._marker_service.get_markers()
         
+        # if there are no markers visible, we will just mute the vest
+        if markers is None:
+            self._device.mute()
+            return
+        
+        # find the average angle
+        angles = []
+        for m in markers:
+            angles.append(self._marker_service.get_angle(m))
+        
+        # if there are no angles, mute vest
+        if not angles:
+            self._device.mute()
+            return
+        
+        meanAngle = np.mean(angles)
+        print("Mean angle: " + str(meanAngle))
+        
+        actuators = self._fetch_actuators_from_angle(meanAngle)
+        
+        if actuators is None:
+            self._device.mute()
+            return
+        
+        #print(actuators)
+        for index in cfg.actuators:
+            i = int(index)
+            if i in actuators:
+                print("Vibrating pin at index: " + index)
+                self._device.setPin(i, 255)
+            else:
+                self._device.setPin(i, 0)
+    
+    def _fetch_actuators_from_angle(self, angle):
+        actuatorRanges = cfg.actuatorRanges
+        
+        for r in actuatorRanges:
+            startAngle = r["start"]
+            endAngle = r["end"]
+            if angle >= startAngle and angle <= endAngle:
+                return r["actuators"]
+        
+        return None
         
     def _regulate_frequency(self):
         # get all markers
