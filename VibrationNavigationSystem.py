@@ -39,14 +39,8 @@ class VibrationNavigationSystem:
         minDistance = min(distances)
         
         if minDistance < cfg.minDistance:
-            print("Person is too close")
-            self._device.setFrequency(0)
+            self._device.setFrequency(cfg.frequencyClose)
         elif minDistance > cfg.minDistance and minDistance < cfg.maxDistance:
-            print("Person is in optimal range")
-            self._device.setFrequency(100)
+            self._device.setFrequency(cfg.frequencyOptimal)
         else:
-            print("Person is too far away")
-            self._device.setFrequency(10)
-        
-        
-        
+            self._device.setFrequency(cfg.frequencyFar)     

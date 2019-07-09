@@ -13,6 +13,9 @@ with open("config.json", "r") as json_file:
     device = data["device"]
     minDistance = data["minDistance"]
     maxDistance = data["maxDistance"]
+    frequencyClose = data["frequencyClose"]
+    frequencyOptimal = data["frequencyOptimal"]
+    frequencyFar = data["frequencyFar"]
 
 def get_marker_id(side):
     return data["markers"][side]
