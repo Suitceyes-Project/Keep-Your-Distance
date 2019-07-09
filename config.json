@@ -15,10 +15,13 @@
     "4" : 90,
     "5" : 30
   },
-  "log_enabled" : true,
+  "logEnabled" : true,
   "markerWidth" : 0.08,
   "camera" : 0,
   "arucoDictionary" : 0,
   "gameDuration" : 10000,
-  "timeStep" : 0.16
+  "timeStep" : 0.16,
+  "device": "10:d0:7a:16:b8:d7",
+  "minDistance" : 2.0,
+  "maxDistance" : 5.0
 }

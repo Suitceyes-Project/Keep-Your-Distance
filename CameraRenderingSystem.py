@@ -4,8 +4,11 @@ class CameraRenderingSystem:
 
     def __init__(self, camera_service):
         self._camera_service = camera_service
+        
+    def __enter__(self):
         cv.startWindowThread()
         cv.namedWindow("video frame")
+        return self
 
     def update(self):
         # Display the resulting frame
@@ -14,5 +17,5 @@ class CameraRenderingSystem:
             return        
         cv.imshow('video frame', frame)
     
-    def dispose(self):
+    def __exit__(self, exc_type, exc_value, traceback):
         cv.destroyAllWindows()
