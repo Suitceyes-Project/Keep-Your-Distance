@@ -12,6 +12,9 @@ class LoggingSystem:
         self._name_logfile = 'logfile_{}.csv'.format(self.get_time_stamp("init"))
             
     def __enter__(self):
+        if cfg.isLogEnabled == False:
+            return self
+        
         self._logfile = open(self._name_logfile, mode='w')
         self._writer = csv.writer(self._logfile)            
         self._writer.writerow(['timestamp', 'marker nr', 'distance', 'angle'])

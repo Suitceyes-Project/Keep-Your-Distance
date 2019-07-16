@@ -21,7 +21,7 @@ starting_time = time.time()
 game_running = True
 
 # Initialize the bluetooth connection to the vest
-#vest = VestDevice(cfg.device)
+vest = VestDevice(cfg.device)
 
 # make sure camera is released
 with CameraService() as camera_service, \
@@ -30,7 +30,7 @@ with CameraService() as camera_service, \
 
     # create systems
     marker_detection_system = MarkerDetectionSystem(marker_service, camera_service)
-    #vibration_navigation_system = VibrationNavigationSystem(vest, marker_service)
+    vibration_navigation_system = VibrationNavigationSystem(vest, marker_service)
     marker_transformation_system = MarkerTransformationSystem(marker_service, camera_service)
     
     try:        
@@ -47,7 +47,7 @@ with CameraService() as camera_service, \
             marker_detection_system.update()
             marker_transformation_system.update()
             camera_rendering_system.update()
-            #vibration_navigation_system.update()
+            vibration_navigation_system.update()
 
             # reset timer
             delta = 0.0
@@ -61,4 +61,4 @@ with CameraService() as camera_service, \
                 vest.mute()
     finally:
         print("Closed application")
-        #vest.mute()
+        vest.mute()

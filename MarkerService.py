@@ -3,10 +3,10 @@ class MarkerService:
     def __init__(self):
         self._markers = [] # contains an array of all markers
         self._corners = { } # maps marker id to an array of corners
-        self._forward = { } 
+        self._forward = { } # maps marker id to forward vector
         self._marker_centers = { } # maps marker id to its marker center
         self._distances = { } # maps the distance between the camera and a marker id
-        self._angles = { } 
+        self._angles = { }
         self._frame = None
         self._corners_array = None
         

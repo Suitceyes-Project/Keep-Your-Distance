@@ -15,7 +15,7 @@
     "4" : 90,
     "5" : 30
   },
-  "logEnabled" : true,
+  "logEnabled" : false,
   "markerWidth" : 0.08,
   "camera" : 0,
   "arucoDictionary" : 0,
@@ -24,6 +24,7 @@
   "device": "10:d0:7a:16:b8:d7",
   "minDistance" : 0.3,
   "maxDistance" : 0.8,
+  "targetLookAtThreshold" : 0.3,
   "frequencyClose": 10,
   "frequencyOptimal": 100,
   "frequencyFar": 255,

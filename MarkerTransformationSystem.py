@@ -18,19 +18,26 @@ class MarkerTransformationSystem:
         if markers is None:
             return
         
+        # get values for pose estimation
         cam_matrix = self._camera_service.get_matrix()
         dist_coeffs = self._camera_service.get_distortion_coefficients()
         marker_length = float(cfg.markerWidth);
         corners = self._marker_service.get_corners_array()
-                
+        
+        # get an array of rotation vectors and translation vector
         rvecs, tvecs, _ = aruco.estimatePoseSingleMarkers(corners, marker_length, cam_matrix, dist_coeffs)
         
         for i in range(0, len(markers)):
-            ##print("Distance: " + str(np.linalg.norm(tvecs[i])))
+            # Convert rotation vector to rotation matrix
             dst, _ = cv.Rodrigues(rvecs[i])
+            
+            # Calculate the forward vector from the rotation matrix
             fwd = np.matmul(dst, [0,0,-1])
-            dot = np.dot(fwd, [0,0,1])
+            
+            # Add forward vector to marker service
+            self._marker_service.set_forward(markers[i], fwd)
+            #dot = np.dot(fwd, [0,0,1])
             #angle = np.arccos(dot)
-            #print(np.rad2deg(angle))
+
             aruco.drawAxis(frame, cam_matrix, dist_coeffs, rvecs[i], tvecs[i], 0.1)    
    
