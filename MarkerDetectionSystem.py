@@ -29,9 +29,12 @@ class MarkerDetectionSystem:
 
         # Convert to grayscale image
         gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-        corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, self._aruco_dict, parameters=self.parameters)
+        corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, self._aruco_dict, parameters=self.parameters)       
         
         if ids is not None:
+            # update corners
+            self._marker_service.set_corners_array(corners)
+            
             for i in range(0, len(ids)):
                 # Get corner
                 c = corners[i][0]
@@ -60,7 +63,7 @@ class MarkerDetectionSystem:
             length_px_1 = np.linalg.norm([abs(dist_x1), abs(dist_y1)])
             length_px_2 = np.linalg.norm([abs(dist_x2), abs(dist_y2)])
             dist = (marker_width * focal_length) / max(length_px_1, length_px_2)
-            print("The calculated distance marker - camera is:" + str(dist))
+            #print("The calculated distance marker - camera is:" + str(dist))
             return dist
         else:
             print("Sorry, focal length or marker width is not yet defined. Please use set_focal_length(f) or set_marker_length(w) to define these parameters")
@@ -81,5 +84,5 @@ class MarkerDetectionSystem:
         alpha_rad = np.arctan(dist_x/focal_length)
         alpha_deg = np.degrees(alpha_rad)
 
-        print("The angle between the marker's center and the camera is: ", alpha_deg)
+        #print("The angle between the marker's center and the camera is: ", alpha_deg)
         return alpha_deg

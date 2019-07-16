@@ -9,6 +9,7 @@ from MarkerDetectionSystem import MarkerDetectionSystem
 from CameraRenderingSystem import CameraRenderingSystem
 from LoggingSystem import LoggingSystem
 from VibrationNavigationSystem import VibrationNavigationSystem
+from MarkerTransformationSystem import MarkerTransformationSystem
 
 # create services
 marker_service = MarkerService()
@@ -20,7 +21,7 @@ starting_time = time.time()
 game_running = True
 
 # Initialize the bluetooth connection to the vest
-vest = VestDevice(cfg.device)
+#vest = VestDevice(cfg.device)
 
 # make sure camera is released
 with CameraService() as camera_service, \
@@ -29,8 +30,9 @@ with CameraService() as camera_service, \
 
     # create systems
     marker_detection_system = MarkerDetectionSystem(marker_service, camera_service)
-    vibration_navigation_system = VibrationNavigationSystem(vest, marker_service)
-
+    #vibration_navigation_system = VibrationNavigationSystem(vest, marker_service)
+    marker_transformation_system = MarkerTransformationSystem(marker_service, camera_service)
+    
     try:        
         print("Game running...")
         # GAME LOOP
@@ -39,25 +41,18 @@ with CameraService() as camera_service, \
             delta += 0.01
 
             # detect marker
-            if(delta > sleep_time):
-                marker_detection_system.update()
-                camera_rendering_system.update()
-                vibration_navigation_system.update()
-                logging_system.update()
+            if(delta < sleep_time):
+                continue
+            
+            marker_detection_system.update()
+            marker_transformation_system.update()
+            camera_rendering_system.update()
+            #vibration_navigation_system.update()
 
-                #if dist != -1.0 and dist != 0.0:
-                #    if dist < 50:
-                #        print("Tell actuator detective is too clos to target")
-                #    elif dist > 150:
-                #        print("Tell actuator detective is too far away from target")
-                    
-                #actuator_controller.update(angle)
+            # reset timer
+            delta = 0.0
 
-                # reset timer
-                delta = 0.0
-
-
-                # GAME END
+            # GAME END
             time_played = time.time() - starting_time
             if time_played > game_duration:
                 time_played = 0.0
@@ -65,4 +60,5 @@ with CameraService() as camera_service, \
                 game_running = False
                 vest.mute()
     finally:
-        vest.mute()
+        print("Closed application")
+        #vest.mute()
