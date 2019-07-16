@@ -25,6 +25,7 @@
   "minDistance" : 0.3,
   "maxDistance" : 0.8,
   "targetLookAtThreshold" : 0.3,
+  "dangerTime" : 10,
   "frequencyClose": 10,
   "frequencyOptimal": 100,
   "frequencyFar": 255,

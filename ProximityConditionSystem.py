@@ -6,7 +6,7 @@ class ProximityConditionSystem:
         self._game = game
         self._marker_service = marker_service
         self._is_in_danger = False        
-        self._max_time_in_danger = 4        
+        self._max_time_in_danger = cfg.dangerTime        
         self._time_in_danger = 0
         self._distances = []
         
@@ -37,14 +37,14 @@ class ProximityConditionSystem:
     def _increase_time(self, delta_time):
         # increment time
         self._time_in_danger += delta_time
-        print("User is in danger: " + str(self._time_in_danger))
+        #print("User is in danger: " + str(self._time_in_danger))
         # set flag
         self._is_in_danger = True
     
     def _decrease_time(self, delta_time):
         self._time_in_danger -= delta_time
         self._time_in_danger = max(0, self._time_in_danger)
-        print("User is safe. Cooldown: " + str(self._time_in_danger))
+        #print("User is safe. Cooldown: " + str(self._time_in_danger))
         # if time > time before reset
         if self._time_in_danger == 0:               
             # reset time
