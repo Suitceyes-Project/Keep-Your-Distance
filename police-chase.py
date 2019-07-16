@@ -19,6 +19,7 @@ delta = 0.0
 sleep_time = cfg.timeStep
 starting_time = time.time()
 game_running = True
+time_prev_frame = time.time()
 
 # Initialize the bluetooth connection to the vest
 vest = VestDevice(cfg.device)
@@ -37,8 +38,11 @@ with CameraService() as camera_service, \
         print("Game running...")
         # GAME LOOP
         while (game_running):
-
-            delta += 0.01
+            
+            # calculated time passed
+            current_time = time.time()
+            delta += current_time - time_prev_frame
+            time_prev_frame = current_time
 
             # detect marker
             if(delta < sleep_time):
@@ -53,7 +57,7 @@ with CameraService() as camera_service, \
             delta = 0.0
 
             # GAME END
-            time_played = time.time() - starting_time
+            time_played = current_time - starting_time
             if time_played > game_duration:
                 time_played = 0.0
                 delta = 0.0
