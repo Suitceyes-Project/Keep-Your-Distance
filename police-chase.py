@@ -10,16 +10,15 @@ from CameraRenderingSystem import CameraRenderingSystem
 from LoggingSystem import LoggingSystem
 from VibrationNavigationSystem import VibrationNavigationSystem
 from MarkerTransformationSystem import MarkerTransformationSystem
+from Game import Game
 
 # create services
 marker_service = MarkerService()
 
-game_duration = cfg.gameDuration
 delta = 0.0
 sleep_time = cfg.timeStep
-starting_time = time.time()
-game_running = True
 time_prev_frame = time.time()
+game = Game()
 
 # Initialize the bluetooth connection to the vest
 vest = VestDevice(cfg.device)
@@ -34,35 +33,38 @@ with CameraService() as camera_service, \
     vibration_navigation_system = VibrationNavigationSystem(vest, marker_service)
     marker_transformation_system = MarkerTransformationSystem(marker_service, camera_service)
     
+    # start the game
+    game.start()
+    
     try:        
         print("Game running...")
         # GAME LOOP
-        while (game_running):
+        while (game.is_running):
             
             # calculated time passed
             current_time = time.time()
             delta += current_time - time_prev_frame
             time_prev_frame = current_time
 
-            # detect marker
+            # wait for next frame
             if(delta < sleep_time):
                 continue
             
+            # update systems
+            game.update(delta)
             marker_detection_system.update()
             marker_transformation_system.update()
             camera_rendering_system.update()
             vibration_navigation_system.update()
-
+            
             # reset timer
             delta = 0.0
 
             # GAME END
-            time_played = current_time - starting_time
-            if time_played > game_duration:
-                time_played = 0.0
-                delta = 0.0
-                game_running = False
+            if game.is_over:
+                print("Game is over.")
                 vest.mute()
+
     finally:
         print("Closed application")
         vest.mute()
