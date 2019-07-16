@@ -34,7 +34,7 @@ class VibrationNavigationSystem:
             return
         
         meanAngle = np.mean(angles)
-        print("Mean angle: " + str(meanAngle))
+        #print("Mean angle: " + str(meanAngle))
         
         actuators = self._fetch_actuators_from_angle(meanAngle)
         
@@ -46,7 +46,7 @@ class VibrationNavigationSystem:
         for index in cfg.actuators:
             i = int(index)
             if i in actuators:
-                print("Vibrating pin at index: " + index)
+                #print("Vibrating pin at index: " + index)
                 self._device.setPin(i, 255)
             else:
                 self._device.setPin(i, 0)

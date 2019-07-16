@@ -10,6 +10,7 @@ from CameraRenderingSystem import CameraRenderingSystem
 from LoggingSystem import LoggingSystem
 from VibrationNavigationSystem import VibrationNavigationSystem
 from MarkerTransformationSystem import MarkerTransformationSystem
+from ProximityConditionSystem import ProximityConditionSystem
 from Game import Game
 
 # create services
@@ -32,6 +33,7 @@ with CameraService() as camera_service, \
     marker_detection_system = MarkerDetectionSystem(marker_service, camera_service)
     vibration_navigation_system = VibrationNavigationSystem(vest, marker_service)
     marker_transformation_system = MarkerTransformationSystem(marker_service, camera_service)
+    proximity_condition_system = ProximityConditionSystem(game, marker_service)
     
     # start the game
     game.start()
@@ -56,6 +58,7 @@ with CameraService() as camera_service, \
             marker_transformation_system.update()
             camera_rendering_system.update()
             vibration_navigation_system.update()
+            proximity_condition_system.update(delta)
             
             # reset timer
             delta = 0.0
