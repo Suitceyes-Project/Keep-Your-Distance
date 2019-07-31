@@ -11,7 +11,6 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 
 #include <CmdMessenger.h>  // CmdMessenger
 
-
 #define MIN_CONN_INTERVAL          0x0028 // 50ms.
 #define MAX_CONN_INTERVAL          0x0190 // 500ms.
 #define SLAVE_LATENCY              0x0000 // No slave latency.
@@ -111,19 +110,29 @@ static btstack_timer_source_t characteristic2;
 char rx_buf[TXRX_BUF_LEN];
 static uint8_t rx_state = 0;
 
+#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
+#define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
+#define NELEMS(x) (sizeof(x)/sizeof(x[0]))
 
 // Redbear Duo (WPM)
-const byte pinsNo[] = {D0,D1,D2,D3,D8,D9,12,13,14,15,16,17}; // array contains the vibe's pin numbers
+const byte pinsNo[] = { D0,D1,/*D2,D3,*/ D8, D9, D14,D15 /*,D16*/}; // array contains the vibe's pin numbers
+const byte servoPins[] = {A4, A5, D3, D2}; // array of the servo's pin numbers
 // Arduino (No WPM)
 //const byte pinsNo[] = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
-
-byte pinsValue[sizeof(pinsNo)]; // array will contain the current vibe values
+Servo* motors[NELEMS(servoPins)];
+int motorsTargetValue[NELEMS(servoPins)]; // contains the motors' target rotation value. 
+int motorsCurrentValue[NELEMS(servoPins)]; // contains the motors' current rotation value;
+long motorSpeed; // how quickly the motors spin in degrees per millisecond.
+byte pinsValue[NELEMS(pinsNo)]; // array will contain the current vibe values
 unsigned long frequency; // frequency of blink vibration in ms
 unsigned long lastUpdate; // will contain the time of last blink update in ms
 boolean isOn; // will contain boolean if vibes are vibrating in current blink state
 boolean hasChanged; // boolean if there have been changes to pins' values to take care of
 CmdMessenger c = CmdMessenger(Serial); // Serial Messenger object
-boolean debug = false;
+boolean debug = true;
+unsigned long lastTick;
+
+
 
 enum // Define Commands:
 {
@@ -137,8 +146,9 @@ enum // Define Commands:
   PinState,  // 7: Sends value y of pin x (args: pin, value)
   FreqState, // 8: Sends value of frequency x (args: frequency)
   StringMsg, // 9: Sends a string message x (args: x)
-  DebugSet   // 10: sets debug mode to x (args: x)
-
+  DebugSet,  // 10: sets debug mode to x (args: x)
+  SetMotor,  // 11: sets the motor to a given rotation in degrees
+  SetMotorSpeed, // 12: changes how quickly the motors spin
 };
 
 void attachCommandCallbacks() { // attach callback functions for specific commands
@@ -151,6 +161,8 @@ void attachCommandCallbacks() { // attach callback functions for specific comman
   c.attach(PinGet, OnPinGet);
   c.attach(FreqGet, OnFreqGet);
   c.attach(DebugSet, OnDebugSet);
+  c.attach(SetMotor, OnSetMotor);
+  c.attach(SetMotorSpeed, OnSetMotorSpeed);
 }
 
 // Called when a received command has no attached function
@@ -170,8 +182,8 @@ void OnPinSet() {
     c.sendCmd(StringMsg, "PinGet: argument value is not ok.");
     return;
   }
-
-  if (pin >= sizeof(pinsNo)) {
+  
+  if (pin >= NELEMS(pinsNo)) {
     c.sendCmd(StringMsg, "PinGet: argument pin is out of range.");
   }
   
@@ -189,7 +201,7 @@ void OnPinMute() {
     return;
   }
 
-  if (pin >= sizeof(pinsNo)) {
+  if (pin >= NELEMS(pinsNo)) {
     c.sendCmd(StringMsg, "PinMute: argument pin is out of range.");
   }
 
@@ -210,7 +222,7 @@ void OnGloveSet() {
       return;
     }
 
-    if (arg0 >= sizeof(pinsNo)) {
+    if (arg0 >= NELEMS(pinsNo)) {
       c.sendCmd(StringMsg, "GloveSet: argument pin is out of range.");
     }
 
@@ -224,7 +236,7 @@ void OnGloveSet() {
 }
 
 void OnGloveMute() {
-  for (byte i = 0; i < sizeof(pinsNo); i++) {
+  for (byte i = 0; i < NELEMS(pinsNo); i++) {
     pinsValue[i] = 0;
     hasChanged = true;
   }
@@ -252,7 +264,7 @@ void OnPinGet() {
     return;
   }
 
-  if (pin >= sizeof(pinsNo)) {
+  if (pin >= NELEMS(pinsNo)) {
     c.sendCmd(StringMsg, "PinGit: argument pin is out of range.");
   }
 
@@ -272,6 +284,47 @@ void OnDebugSet() {
   if (c.isArgOk()) {
     debug = dbg;
   }
+}
+
+void OnSetMotor()
+{
+  byte pin = c.readInt16Arg();
+  if (!c.isArgOk()) {
+    c.sendCmd(StringMsg, "OnSetMotor: argument pin is not ok.");
+    return;
+  }
+  
+  int value = c.readInt16Arg();
+  if (!c.isArgOk()) {
+    c.sendCmd(StringMsg, "OnSetMotor: argument value is not ok.");
+    return;
+  }
+
+  if (pin >= NELEMS(servoPins)) {
+    c.sendCmd(StringMsg, "OnSetMotor: argument pin is out of range.");
+  }
+  
+  motorsTargetValue[pin] = value;
+
+  if (debug)
+    Serial.println("OnSetMotor: Set pin " + String(pin) + " to rotation " + String(value));
+}
+
+void OnSetMotorSpeed()
+{
+  unsigned int speed = c.readInt16Arg();
+  if (!c.isArgOk()) {
+    c.sendCmd(StringMsg, "OnSetMotorSpeed: argument speed is not ok.");
+    return;
+  }
+  if (speed < 0) {
+    c.sendCmd(StringMsg, "OnSetMotorSpeed: Value must be >= 0.");
+    return;
+  }
+
+  motorSpeed = speed;
+  
+  Serial.println("OnSetMotorSpeed: Set speed to " + String(speed));
 }
 
 void OnUnknown() {
@@ -312,7 +365,7 @@ int gattWriteCallback(uint16_t value_handle, uint8_t *buf, uint16_t size)
       break;
     case GloveMute:
     {
-      for (byte i = 0; i < sizeof(pinsNo); i++)
+      for (byte i = 0; i < NELEMS(pinsNo); i++)
       {
         pinsValue[i] = 0;
         hasChanged = true;
@@ -323,6 +376,19 @@ int gattWriteCallback(uint16_t value_handle, uint8_t *buf, uint16_t size)
     {
       int f = buf[1];
       frequency = f;
+    }
+      break;
+    case SetMotor:
+    {
+      int pin = buf[1];
+      int rotation = buf[2];
+      motorsTargetValue[pin] = rotation;
+    }
+      break;
+    case SetMotorSpeed:
+    {
+      unsigned int speed = buf[1];
+      motorSpeed = speed;
     }
       break;
   }
@@ -362,24 +428,38 @@ static uint16_t gattReadCallback(uint16_t value_handle, uint8_t * buffer, uint16
 
 void setup() {
   frequency = 1000;
+  motorSpeed = 1000;
   lastUpdate = millis();
+  lastTick = millis();
   isOn = false;
   hasChanged = false;
 
-  for (byte i = 0; i < sizeof(pinsNo); i++) {
+  for (byte i = 0; i < NELEMS(pinsNo); i++) {
     pinsValue[i] = 0;
     pinMode(pinsNo[i], OUTPUT);
-
-    if (debug) {
-      analogWrite(pinsNo[i], 255);
-      delay(500);
-      analogWrite(pinsNo[i], 0);
-    }
   }
   Serial.begin(115200);
   c.printLfCr();
+
+  Serial.println("Attaching callbacks");
   attachCommandCallbacks();
 
+  delay(5000);
+  
+  // attach servo motors to given pins
+  c.sendCmd(StringMsg, "Attaching servo motors");
+  for(int i = 0; i < NELEMS(servoPins); i++)
+  {
+    motors[i] = new Servo();
+    Serial.println("Attaching servo to pin: " + String(servoPins[i]));
+    motors[i]->attach(servoPins[i]);
+    motorsTargetValue[i] = 0;
+    motorsCurrentValue[i] = 0;
+  }
+
+
+  Serial.println("Setting up BLE availability");
+  
   ble.init();
   
   // Register BLE callback functions
@@ -412,7 +492,6 @@ void setup() {
   // BLE peripheral starts advertising now.
   ble.startAdvertising();
 
-  
   c.sendCmd(StringMsg, "Glove is up and running!");
 }
 
@@ -420,6 +499,9 @@ void loop() {
   unsigned long currentTime = millis();
   // Process incoming serial data, and perform callbacks
   c.feedinSerialData();
+
+  
+  
   boolean changeState = (currentTime >= lastUpdate + frequency);
   // only if alternation phase ends or the pin values changed during on-phase
   if (changeState || (hasChanged && isOn)) {
@@ -429,7 +511,8 @@ void loop() {
       if (changeState) {
         isOn = true;
       }
-      for (byte i = 0; i < sizeof(pinsNo); i++) {
+      for (unsigned int i = 0; i < NELEMS(pinsNo); i++) {
+        
         analogWrite(pinsNo[i], pinsValue[i]);
       }
     }
@@ -437,7 +520,7 @@ void loop() {
     else {
       isOn = false;
       hasChanged = false;
-      for (byte i = 0; i < sizeof(pinsNo); i++) {
+      for (unsigned int i = 0; i < NELEMS(pinsNo); i++) {         
         analogWrite(pinsNo[i], LOW);
       }
     }
@@ -446,4 +529,41 @@ void loop() {
       lastUpdate = currentTime;
     }
   }
+  
+  // Execute motor logic
+  unsigned long deltaTime = (currentTime - lastTick);
+
+  bool updateMotors = currentTime - lastTick > motorSpeed;
+
+  
+  if(updateMotors)
+  {
+    for(unsigned int i = 0; i < NELEMS(servoPins); i++)
+    {
+      
+      Servo* servo = motors[i];
+      int targetRotation = motorsTargetValue[i];
+      int currentRotation = motorsCurrentValue[i];
+      //servo->write(targetRotation);*/
+      //Serial.println("Target rotation is: " + String(motorsTargetValue[i]));
+      if(currentRotation == targetRotation){
+        servo->write(currentRotation); 
+      }
+      else if(currentRotation < targetRotation){
+        int newRotation = MIN(currentRotation + 1, targetRotation);      
+        //Serial.println("Rotating from " + String(currentRotation) + " to " + String(newRotation));
+        servo->write(newRotation);
+        motorsCurrentValue[i] = newRotation;
+      }
+      else{
+        int newRotation = MAX(currentRotation - 1, targetRotation);
+        //Serial.println("Rotating from " + String(currentRotation) + " to " + String(newRotation));
+        servo->write(newRotation);
+        motorsCurrentValue[i] = newRotation;
+      }   
+    }
+
+    lastTick = currentTime;
+  }
+  
 }
