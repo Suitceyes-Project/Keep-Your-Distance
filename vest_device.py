@@ -28,7 +28,7 @@ class VestDevice:
             
     def setFrequency(self,frequency):
         """Sets the frequency of the entire vest.
-        frequency: an integer from 0 - 255
+        frequency.
         """
         if self.__isValidState():
             rList=[4,frequency]
@@ -39,3 +39,20 @@ class VestDevice:
         if self.__isValidState():
             rList=[3]
             self.__write(bytes(rList))
+    
+    def setMotor(self,index,rotation):
+        """
+        Sets a given motor index to a given target rotation.
+        """
+        if self.__isValidState():
+            rList = [11,index,rotation]
+            self.__write(bytes(rList))
+            
+    def setMotorSpeed(self,speed):
+        """
+        Changes how long it takes to move 1 degree per millisecond.
+        """
+        if speed <= 0:
+            raise ValueError("speed must be greater than 0.")
+        rList = [12,speed]
+        self.__write(bytes(rList))

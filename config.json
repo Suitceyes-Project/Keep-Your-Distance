@@ -15,6 +15,12 @@
     "4" : 90,
     "5" : 30
   },
+  "motors":
+  {
+      "front" : [0,1],
+      "back" : [2,3]
+  },
+  "motorInterval": 0.2,
   "logEnabled" : false,
   "markerWidth" : 0.08,
   "camera" : 0,

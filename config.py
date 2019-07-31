@@ -19,6 +19,8 @@ with open("config.json", "r") as json_file:
     actuatorRanges = data["actuatorRanges"]
     targetLookAtThreshold = data["targetLookAtThreshold"]
     dangerTime = data["dangerTime"]
+    motors = data["motors"]
+    motorInterval = data["motorInterval"]
 
 def get_marker_id(side):
     return data["markers"][side]
