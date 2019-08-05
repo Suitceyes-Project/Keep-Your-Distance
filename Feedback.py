@@ -2,9 +2,9 @@ import config as cfg
 import time
 
 class Tap:
-    duration : float
-    pins : []
-    time_started : float
+    duration = 0
+    pins = []
+    time_started = 0
     
     def __init__(self, duration: float, pins : [], time_started : float):
         self.duration = duration
@@ -15,16 +15,16 @@ class Feedback:
     current = None
     
     def tap(is_front, duration):
-        pins = is_front ? cfg.motors["front"] : cfg.motors["back"]
-        self.current = Tap(duration, pins, time.time())
+        pins =  (cfg.motors["front"] , cfg.motors["back"])[is_front == True]
+        Feedback.current = Tap(duration, pins, time.time())
     
     def stop():
-        self.current = None
+        Feedback.current = None
         
 class FeedbackSystem:
     def __init__(self, vest):
         self._vest = vest
-        self._vest.setMotorSpeed = 1
+        self._vest.setMotorSpeed(1)
         self._rotation = 0 # represents a rotation direction (back or forth)
         self._last_update = time.time()
         
@@ -49,7 +49,7 @@ class FeedbackSystem:
         
         # for each motor set the rotation
         for i in range(0, len(Feedback.current.pins)):
-            self._vest.setMotor(Feedback.current.pins[i], self._rotation = 0? 45 : 135)
+            self._vest.setMotor(Feedback.current.pins[i], (45 , 135)[self._rotation == 0])
         
         # change rotation direction and update last time
         self._rotation = (self._rotation + 1) % 2
