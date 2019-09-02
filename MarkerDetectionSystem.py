@@ -2,6 +2,7 @@ import cv2 as cv
 import cv2.aruco as aruco
 import config as cfg
 import numpy as np
+import fisheye_calibration
 
 class MarkerDetectionSystem:
 
@@ -25,7 +26,7 @@ class MarkerDetectionSystem:
 
         # If nothing was returned, just exit
         if ret == False:
-            return
+            return     
 
         # Convert to grayscale image
         gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)

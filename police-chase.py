@@ -23,14 +23,16 @@ sleep_time = cfg.timeStep
 time_prev_frame = time.time()
 game = Game()
 
-# Initialize the bluetooth connection to the vest
-vest = VestDevice(cfg.device)
+
 
 # make sure camera is released
 with CameraService() as camera_service, \
      LoggingSystem(marker_service) as logging_system, \
      CameraRenderingSystem(camera_service) as camera_rendering_system:
 
+    # Initialize the bluetooth connection to the vest
+    vest = VestDevice(cfg.device)
+    
     # create systems
     marker_detection_system = MarkerDetectionSystem(marker_service, camera_service)
     vibration_navigation_system = VibrationNavigationSystem(vest, marker_service)
@@ -64,7 +66,7 @@ with CameraService() as camera_service, \
             vibration_navigation_system.update()
             target_look_at_system.update()
             feedback_system.update()
-            proximity_condition_system.update(delta)
+            #proximity_condition_system.update(delta)
             
             # reset timer
             delta = 0.0
