@@ -42,14 +42,14 @@ class CameraService:
         
         # Undistort image if using fisheye
         if cfg.useFisheye:
-            DIM=(cfg.resolutionX, cfg.resolutionY)
-            h,w = self._frame.shape[:2]
-            K = self._cam_matrix
-            D = self._dist_coeffs
-            map1, map2 = cv.fisheye.initUndistortRectifyMap(K, D, np.eye(3), K, DIM, cv.CV_16SC2)
-            self._frame = cv.remap(self._frame, map1, map2, interpolation=cv.INTER_LINEAR, borderMode=cv.BORDER_CONSTANT)
-        
-        #self._frame = fisheye_calibration.undistort_frame(self._frame, self._cam_matrix, self._dist_coeffs, 0.2)
+            #DIM=(cfg.resolutionX, cfg.resolutionY)
+            #h,w = self._frame.shape[:2]
+            #K = self._cam_matrix
+            #D = self._dist_coeffs
+            #map1, map2 = cv.fisheye.initUndistortRectifyMap(K, D, np.eye(3), K, DIM, cv.CV_16SC2)
+            #self._frame = cv.remap(self._frame, map1, map2, interpolation=cv.INTER_LINEAR, borderMode=cv.BORDER_CONSTANT)
+            #print(self._cam_matrix)
+            self._frame = fisheye_calibration.undistort_frame(self._frame, self._cam_matrix, self._dist_coeffs)
         
         return ret, self._frame
 
