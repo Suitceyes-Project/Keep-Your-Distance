@@ -21,6 +21,8 @@ with open("config.json", "r") as json_file:
     dangerTime = data["dangerTime"]
     motors = data["motors"]
     motorInterval = data["motorInterval"]
+    resolutionX = data["resolutionX"]
+    resolutionY = data["resolutionY"]
 
 def get_marker_id(side):
     return data["markers"][side]

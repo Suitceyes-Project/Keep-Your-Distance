@@ -21,6 +21,8 @@
       "back" : [2,3]
   },
   "motorInterval": 0.2,
+  "resolutionX" : 640,
+  "resolutionY" : 480,
   "logEnabled" : false,
   "markerWidth" : 0.08,
   "camera" : 0,
