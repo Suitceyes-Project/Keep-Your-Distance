@@ -45,7 +45,7 @@ with CameraService() as camera_service, \
     game.start()
     
     try:        
-        print("Game running...")
+        print("Game running...", flush=True)
         # GAME LOOP
         while (game.is_running):
             
@@ -73,9 +73,9 @@ with CameraService() as camera_service, \
 
             # GAME END
             if game.is_over:
-                print("Game is over.")
+                print("Game is over.", flush=True)
                 vest.mute()
 
     finally:
-        print("Closed application")
+        print("Closed application", flush=True)
         vest.mute()
