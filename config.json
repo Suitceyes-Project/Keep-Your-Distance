@@ -1,123 +1,4 @@
 {
-  "calibrate" : false,
-  "useFisheye" : true,
-  "focalLength": 271.05622021121826,
-  "camera": 0,
-  "targetLookAtThreshold": 0.3,
-  "distortCoeffs": [
-    [
-      -0.05131363072543321
-    ],
-    [
-      0.058000295304052686
-    ],
-    [
-      -0.054167169595249406
-    ],
-    [
-      0.012821685814386169
-    ]
-  ],
-  "resolutionX": 640,
-  "markers": {
-    "front": 0,
-    "right": 2,
-    "back": 3,
-    "left": 1
-  },
-  "logEnabled": false,
-  "device": "10:d0:7a:16:b8:d7",
-  "frequencyFar": 255,
-  "frequencyClose": 10,
-  "minDistance": 0.3,
-  "motorInterval": 0.2,
-  "gameDuration": 10000,
-  "actuators": {
-    "0": -30,
-    "1": -90,
-    "2": -150,
-    "3": 150,
-    "4": 90,
-    "5": 30
-  },
-  "actuatorRanges": [
-    {
-      "start": -180,
-      "actuators": [
-        1
-      ],
-      "end": -75
-    },
-    {
-      "start": -75,
-      "actuators": [
-        0,
-        1
-      ],
-      "end": -45
-    },
-    {
-      "start": -45,
-      "actuators": [
-        0
-      ],
-      "end": -15
-    },
-    {
-      "start": -15,
-      "actuators": [
-        0,
-        5
-      ],
-      "end": 15
-    },
-    {
-      "start": 15,
-      "actuators": [
-        5
-      ],
-      "end": 45
-    },
-    {
-      "start": 45,
-      "actuators": [
-        5,
-        4
-      ],
-      "end": 75
-    },
-    {
-      "start": 75,
-      "actuators": [
-        4
-      ],
-      "end": 180
-    }
-  ],
-  "resolutionY": 480,
-  "camMatrix": [
-    [
-      271.05622021121826,
-      0,
-      301.9236648872985
-    ],
-    [
-      0,
-      271.2016409908321,
-      232.62277867890003
-    ],
-    [
-      0,
-      0,
-      1
-    ]
-  ],
-  "camCenter": [
-    301.9236648872985,
-    232.62277867890003
-  ],
-  "maxDistance": 0.8,
-  "dangerTime": 10,
   "motors": {
     "front": [
       0,
@@ -128,8 +9,127 @@
       3
     ]
   },
+  "camCenter": [
+    613.0647996753744,
+    340.1146017934957
+  ],
+  "focalLength": 545.2177286545588,
+  "frequencyOptimal": 100,
+  "motorInterval": 0.2,
+  "camera": 0,
+  "resolutionY": 720,
+  "actuatorRanges": [
+    {
+      "actuators": [
+        1
+      ],
+      "end": -75,
+      "start": -180
+    },
+    {
+      "actuators": [
+        0,
+        1
+      ],
+      "end": -45,
+      "start": -75
+    },
+    {
+      "actuators": [
+        0
+      ],
+      "end": -15,
+      "start": -45
+    },
+    {
+      "actuators": [
+        0,
+        5
+      ],
+      "end": 15,
+      "start": -15
+    },
+    {
+      "actuators": [
+        5
+      ],
+      "end": 45,
+      "start": 15
+    },
+    {
+      "actuators": [
+        5,
+        4
+      ],
+      "end": 75,
+      "start": 45
+    },
+    {
+      "actuators": [
+        4
+      ],
+      "end": 180,
+      "start": 75
+    }
+  ],
+  "logEnabled": false,
   "markerWidth": 0.08,
+  "device": "10:d0:7a:16:b8:d7",
+  "camMatrix": [
+    [
+      545.2177286545588,
+      0,
+      613.0647996753744
+    ],
+    [
+      0,
+      546.1145603903964,
+      340.1146017934957
+    ],
+    [
+      0,
+      0,
+      1
+    ]
+  ],
+  "markers": {
+    "left": 1,
+    "front": 0,
+    "right": 2,
+    "back": 3
+  },
   "timeStep": 0.16,
-  "arucoDictionary": 0,
-  "frequencyOptimal": 100
+  "minDistance": 0.3,
+  "actuators": {
+    "0": -30,
+    "1": -90,
+    "2": -150,
+    "3": 150,
+    "4": 90,
+    "5": 30
+  },
+  "frequencyFar": 255,
+  "resolutionX": 1280,
+  "targetLookAtThreshold": 0.3,
+  "calibrate": false,
+  "frequencyClose": 10,
+  "maxDistance": 0.8,
+  "useFisheye": true,
+  "gameDuration": 10000,
+  "distortCoeffs": [
+    [
+      -0.018834895601580342
+    ],
+    [
+      -0.07611629166382393
+    ],
+    [
+      0.09024105234998146
+    ],
+    [
+      -0.035682875901934884
+    ]
+  ],
+  "dangerTime": 10,
+  "arucoDictionary": 0
 }

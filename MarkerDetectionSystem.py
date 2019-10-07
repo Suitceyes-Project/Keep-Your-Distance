@@ -48,6 +48,7 @@ class MarkerDetectionSystem:
                 
                 # Calculate the angle to camera center (uv coordinates are used here)
                 angle = self._angle_to_marker(marker_center)               
+                #print("Angle: " + str(angle))
                 
                 # Update markers database
                 self._marker_service.update_marker(ids[i][0], c, marker_center, distance, angle)           

@@ -31,6 +31,9 @@ class MarkerTransformationSystem:
             # Convert rotation vector to rotation matrix
             dst, _ = cv.Rodrigues(rvecs[i])
             
+            # Set the translation vector
+            self._marker_service.set_translation(markers[i], tvecs[i][0])
+            
             # Calculate the forward vector from the rotation matrix
             fwd = np.matmul(dst, [0,0,-1])
             

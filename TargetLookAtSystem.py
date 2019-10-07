@@ -31,10 +31,10 @@ class TargetLookAtSystem:
         
         # check if the target is looking at the user
         dot = np.dot(marker, [0,0,1])
-        
+                        
         if dot > cfg.targetLookAtThreshold:           
             # tell the user to stop walking
-            print("Target is looking at me!", True)
+            #print("Target is looking at me!", True)
             Feedback.tap(True, 3)
             self._has_provided_feedback = False
             self._was_looking_at_me = True

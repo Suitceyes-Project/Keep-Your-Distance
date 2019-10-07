@@ -11,4 +11,4 @@
 
 echo "Running python script"
 cd "$(dirname "$0")"
-python police-chase.py
+python police-chase.py headless

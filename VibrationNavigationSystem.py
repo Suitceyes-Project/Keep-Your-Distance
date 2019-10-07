@@ -23,20 +23,35 @@ class VibrationNavigationSystem:
             self._device.mute()
             return
         
-        # find the average angle
-        angles = []
+        # get all translations
+        translations = []
         for m in markers:
-            angles.append(self._marker_service.get_angle(m))
+            position = self._marker_service.get_translation(m)
+            translations.append(position)
         
-        # if there are no angles, mute vest
-        if not angles:
+        if not translations:
             self._device.mute()
             return
         
-        meanAngle = np.mean(angles)
-        #print("Mean angle: " + str(meanAngle))
+        # calculate average position
+        meanTranslation = np.mean(translations, axis=0)
         
-        actuators = self._fetch_actuators_from_angle(meanAngle)
+        # normalize the direction
+        direction = meanTranslation/np.linalg.norm(meanTranslation)
+        
+        # calculate angle 
+        dot = np.dot(direction, [0,0,1])
+        angle = np.rad2deg(np.arccos(dot))
+        cross = np.cross(direction, [0,0,1])
+        
+        sign = np.dot([0,1,0], cross);
+
+        if sign > 0:
+            angle = -angle
+        
+        #print(angle, flush=True)
+        # fetch correct actuators
+        actuators = self._fetch_actuators_from_angle(angle)
         
         if actuators is None:
             self._device.mute()

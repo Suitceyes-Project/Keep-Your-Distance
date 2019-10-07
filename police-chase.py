@@ -15,6 +15,8 @@ from Game import Game
 from TargetLookAtSystem import TargetLookAtSystem
 from Feedback import FeedbackSystem
 
+print("entered police-chase script", flush=True)
+
 # create services
 marker_service = MarkerService()
 

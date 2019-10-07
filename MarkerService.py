@@ -7,6 +7,7 @@ class MarkerService:
         self._marker_centers = { } # maps marker id to its marker center
         self._distances = { } # maps the distance between the camera and a marker id
         self._angles = { }
+        self._translations = {} # maps marker id to their translation vector
         self._frame = None
         self._corners_array = None
         
@@ -45,6 +46,13 @@ class MarkerService:
         if marker_id in self._forward:
             return self._forward[marker_id]
         return None
+    
+    def get_translation(self, marker_id):
+        if marker_id in self._translations:
+            return self._translations[marker_id]
+        
+    def set_translation(self, marker_id, translation):
+        self._translations[marker_id] = translation
     
     def set_corners_array(self, corners):
         self._corners_array = corners

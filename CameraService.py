@@ -15,7 +15,9 @@ class CameraService:
             self._dist_coeffs = cfg.distortCoeffs
         
     def __enter__(self):
-        self._cap = cv.VideoCapture(cfg.camera) # 0 webcam of laptop # 1 external cam  
+        self._cap = cv.VideoCapture(cfg.camera) # 0 webcam of laptop # 1 external cam
+        self._cap.set(cv.CAP_PROP_FRAME_WIDTH, cfg.resolutionX)
+        self._cap.set(cv.CAP_PROP_FRAME_HEIGHT, cfg.resolutionY)
         return self
         
     def __exit__(self, exc_type, exc_value, traceback):

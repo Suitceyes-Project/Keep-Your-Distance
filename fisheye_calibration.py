@@ -11,7 +11,7 @@ map1 = None
 map2 = None
 
 def fast_calibrate():
-    #cc.capture_image()
+    cc.capture_image()
     ret,k,d,rvecs,tvecs = calibrate_fisheye()
     focal_length = k[0][0]
     cam_center = [k[0][2], k[1][2]]
@@ -112,11 +112,12 @@ def undistort_frame(img, K, D):
     return cv2.remap( img, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
     
 if __name__ == '__main__':
+    #fast_calibrate()
     DIM=(cfg.resolutionX, cfg.resolutionY)  
     k = cfg.camMatrix
     d = cfg.distortCoeffs
-    img = cv2.imread('_calibration/camera_calibration_0.png')
-    undistorted_img = undistort_frame_diff(img, k, d, DIM, 1)
+    img = cv2.imread('_calibration/camera_calibration_3.png')
+    undistorted_img = undistort_frame(img, k, d)
     cv2.imshow('image',undistorted_img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
