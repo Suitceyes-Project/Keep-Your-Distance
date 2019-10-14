@@ -21,55 +21,38 @@
   "actuatorRanges": [
     {
       "actuators": [
-        1
-      ],
-      "end": -75,
-      "start": -180
-    },
-    {
-      "actuators": [
-        0,
-        1
-      ],
-      "end": -45,
-      "start": -75
-    },
-    {
-      "actuators": [
         0
       ],
-      "end": -15,
-      "start": -45
+      "end": 5,
+      "start": -5
     },
     {
       "actuators": [
-        0,
-        5
+	1        
       ],
-      "end": 15,
-      "start": -15
+      "end": -5,
+      "start": -20
     },
     {
       "actuators": [
-        5
+        2
       ],
-      "end": 45,
-      "start": 15
+      "end": -20,
+      "start": -175
     },
     {
       "actuators": [
-        5,
+        3
+      ],
+      "end": 20,
+      "start": 5
+    },
+    {
+      "actuators": [
         4
       ],
-      "end": 75,
-      "start": 45
-    },
-    {
-      "actuators": [
-        4
-      ],
-      "end": 180,
-      "start": 75
+      "end": 175,
+      "start": 20
     }
   ],
   "logEnabled": false,

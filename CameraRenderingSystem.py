@@ -22,8 +22,8 @@ class CameraRenderingSystem:
             return
         
         # Display the resulting frame
-        frame = self._camera_service.get_current_frame()
-        if frame is None:
+        grabbed, frame = self._camera_service.get_current_frame()
+        if grabbed == False:
             return        
         cv.imshow('video frame', frame)
     

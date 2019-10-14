@@ -21,8 +21,8 @@ class MarkerDetectionSystem:
         # Clear all markers (maybe this should not be done)
         self._marker_service.clear()
 
-        # Capture frame-by-frame
-        ret, frame = self._camera_service.read()       
+        # Get the frame
+        ret, frame = self._camera_service.get_current_frame()       
 
         # If nothing was returned, just exit
         if ret == False:

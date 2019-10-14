@@ -3,9 +3,14 @@ import fisheye_calibration
 import cv2 as cv
 import config as cfg
 import numpy as np
-
+from threading import Thread
+from threading import Lock
 class CameraService:
-    def __init__(self):        
+    lock = Lock()
+    def __init__(self):
+        self._stopped = False
+        self._grabbed = False
+        self._frame = None
         if cfg.calibrate:
             self._focal_length, self._cam_center, self._cam_matrix, self._dist_coeffs = (fisheye_calibration.fast_calibrate(), camera_calibration.fast_calibrate())[cfg.useFisheye]
         else:
@@ -18,11 +23,31 @@ class CameraService:
         self._cap = cv.VideoCapture(cfg.camera) # 0 webcam of laptop # 1 external cam
         self._cap.set(cv.CAP_PROP_FRAME_WIDTH, cfg.resolutionX)
         self._cap.set(cv.CAP_PROP_FRAME_HEIGHT, cfg.resolutionY)
+        self._cap.set(cv.CAP_PROP_FPS, 30)
         return self
         
     def __exit__(self, exc_type, exc_value, traceback):
         print("Releasing video capture")
         self._cap.release()
+    
+    def start(self):
+        Thread(target=self.update, args=()).start()
+        return self
+    
+    def stop(self):
+        self._stopped = True
+    
+    def update(self):
+        while True:
+            if self._stopped:
+                return
+            
+            (grabbed, frame) = self._cap.read()
+            if cfg.useFisheye:
+                self._frame = fisheye_calibration.undistort_frame(frame, self._cam_matrix, self._dist_coeffs)
+            else:
+                self._frame = frame
+            self._grabbed = grabbed
     
     def get_matrix(self):
         return self._cam_matrix
@@ -37,23 +62,4 @@ class CameraService:
         return self._cam_center
     
     def get_current_frame(self):
-        return self._frame
-    
-    def read(self):
-        ret, self._frame = self._cap.read()
-        
-        # Undistort image if using fisheye
-        if cfg.useFisheye:
-            #DIM=(cfg.resolutionX, cfg.resolutionY)
-            #h,w = self._frame.shape[:2]
-            #K = self._cam_matrix
-            #D = self._dist_coeffs
-            #map1, map2 = cv.fisheye.initUndistortRectifyMap(K, D, np.eye(3), K, DIM, cv.CV_16SC2)
-            #self._frame = cv.remap(self._frame, map1, map2, interpolation=cv.INTER_LINEAR, borderMode=cv.BORDER_CONSTANT)
-            #print(self._cam_matrix)
-            self._frame = fisheye_calibration.undistort_frame(self._frame, self._cam_matrix, self._dist_coeffs)
-        
-        return ret, self._frame
-
-    
-    
+        return (self._grabbed, self._frame)   

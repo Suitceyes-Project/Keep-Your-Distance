@@ -35,6 +35,8 @@ with CameraService() as camera_service, \
     # Initialize the bluetooth connection to the vest
     vest = VestDevice(cfg.device)
     
+    camera_service.start()
+    
     # create systems
     marker_detection_system = MarkerDetectionSystem(marker_service, camera_service)
     vibration_navigation_system = VibrationNavigationSystem(vest, marker_service)
@@ -81,3 +83,4 @@ with CameraService() as camera_service, \
     finally:
         print("Closed application", flush=True)
         vest.mute()
+        camera_service.stop()

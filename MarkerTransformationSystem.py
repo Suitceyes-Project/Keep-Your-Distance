@@ -13,7 +13,7 @@ class MarkerTransformationSystem:
     
     def update(self):
         markers = self._marker_service.get_markers()
-        frame = self._camera_service.get_current_frame()
+        _, frame = self._camera_service.get_current_frame()
         
         if markers is None:
             return
@@ -42,5 +42,5 @@ class MarkerTransformationSystem:
             #dot = np.dot(fwd, [0,0,1])
             #angle = np.arccos(dot)
 
-            aruco.drawAxis(frame, cam_matrix, dist_coeffs, rvecs[i], tvecs[i], 0.1)    
+            #aruco.drawAxis(frame, cam_matrix, dist_coeffs, rvecs[i], tvecs[i], 0.1)    
    
