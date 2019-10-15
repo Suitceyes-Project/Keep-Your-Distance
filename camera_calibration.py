@@ -5,7 +5,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as py_mpl
 from PIL import Image
 import os, os.path
-
+import config as cfg
 
 # get charuco board from predefined dictionary
 predef_aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_50)
@@ -59,7 +59,9 @@ def load_images():
 # ----------------------------------------------------------------------------------------------------------------------
 # captures images for calibration and saves them to _calibration
 def capture_image():
-    cam = cv.VideoCapture(1) # 0 webcam of laptop # 1 external cam
+    cam = cv.VideoCapture(cfg.camera) # 0 webcam of laptop # 1 external cam
+    cam.set(cv.CAP_PROP_FRAME_WIDTH, cfg.resolutionX)
+    cam.set(cv.CAP_PROP_FRAME_HEIGHT, cfg.resolutionY)
     cv.namedWindow("Calibrate Camera")
     images = []
     img_counter = 0

@@ -2,6 +2,7 @@ import cv2 as cv
 import cv2.aruco as aruco
 import config as cfg
 import numpy as np
+import fisheye_calibration
 
 class MarkerDetectionSystem:
 
@@ -20,12 +21,12 @@ class MarkerDetectionSystem:
         # Clear all markers (maybe this should not be done)
         self._marker_service.clear()
 
-        # Capture frame-by-frame
-        ret, frame = self._camera_service.read()       
+        # Get the frame
+        ret, frame = self._camera_service.get_current_frame()       
 
         # If nothing was returned, just exit
         if ret == False:
-            return
+            return     
 
         # Convert to grayscale image
         gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
@@ -47,6 +48,7 @@ class MarkerDetectionSystem:
                 
                 # Calculate the angle to camera center (uv coordinates are used here)
                 angle = self._angle_to_marker(marker_center)               
+                #print("Angle: " + str(angle))
                 
                 # Update markers database
                 self._marker_service.update_marker(ids[i][0], c, marker_center, distance, angle)           

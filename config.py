@@ -1,5 +1,6 @@
 import json
 import cv2.aruco as aruco
+import numpy as np
 
 with open("config.json", "r") as json_file:
     data = json.load(json_file)
@@ -19,6 +20,17 @@ with open("config.json", "r") as json_file:
     actuatorRanges = data["actuatorRanges"]
     targetLookAtThreshold = data["targetLookAtThreshold"]
     dangerTime = data["dangerTime"]
+    motors = data["motors"]
+    motorInterval = data["motorInterval"]
+    resolutionX = data["resolutionX"]
+    resolutionY = data["resolutionY"]
+    distortCoeffs = np.array(data["distortCoeffs"])
+    focalLength = data["focalLength"]
+    camMatrix = np.array(data["camMatrix"])
+    camCenter = data["camCenter"]
+    calibrate = data["calibrate"]
+    useFisheye = data["useFisheye"]    
+    
 
 def get_marker_id(side):
     return data["markers"][side]
