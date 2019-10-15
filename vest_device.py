@@ -31,8 +31,11 @@ class VestDevice:
         frequency.
         """
         if self.__isValidState():
-            rList=[4,frequency]
-            self.__write(bytes(rList))
+            rList=[4, frequency & (255), (frequency & (255 << 8)) >> 8, (frequency & (255 << 16)) >> 16, (frequency & (255 << 24)) >> 24]
+            
+            b = bytes(rList)
+            print(b)
+            self.__write(b)
     
     def mute(self):
         """Stops all motors on the vest from vibrating"""
