@@ -148,7 +148,7 @@ enum // Define Commands:
   StringMsg, // 9: Sends a string message x (args: x)
   DebugSet,  // 10: sets debug mode to x (args: x)
   SetMotor,  // 11: sets the motor to a given rotation in degrees
-  SetMotorSpeed, // 12: changes how quickly the motors spin
+  SetMotorSpeed // 12: changes how quickly the motors spin
 };
 
 void attachCommandCallbacks() { // attach callback functions for specific commands
@@ -374,7 +374,13 @@ int gattWriteCallback(uint16_t value_handle, uint8_t *buf, uint16_t size)
       break;
     case FreqSet:
     {
-      int f = buf[1];
+      // Little endian
+      unsigned long f = buf[1] + (buf[2] << 8) + (buf[3] << 16) + (buf[4] << 24);
+      // Big endian
+      //unsigned long f = (buf[1] << 24) + (buf[2] << 16) + (buf[3] << 8) + buf[4];
+      Serial.print("Frequency: ");
+      Serial.println(f);
+      //int f = buf[1];
       frequency = f;
     }
       break;
