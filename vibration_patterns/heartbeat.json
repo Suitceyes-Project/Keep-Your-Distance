@@ -21,7 +21,7 @@
         ]
       },
       {
-        "time": 0.5,
+        "time": 0.50,
         "actuators": [
           {
             "pin": 0,
