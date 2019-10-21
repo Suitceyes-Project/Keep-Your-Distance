@@ -1,8 +1,8 @@
 import camera_calibration
 import time
 import config as cfg
+import vest_device
 from MarkerService import MarkerService
-from vest_device import VestDevice
 from actuator_controller import ActuatorController
 from CameraService import CameraService
 from MarkerDetectionSystem import MarkerDetectionSystem
@@ -32,8 +32,11 @@ with CameraService() as camera_service, \
      LoggingSystem(marker_service) as logging_system, \
      CameraRenderingSystem(camera_service) as camera_rendering_system:
 
-    # Initialize the bluetooth connection to the vest
-    vest = VestDevice(cfg.device)
+    # Initialize connection to the vest
+    if cfg.deviceMode == 0:
+        vest = vest_device.UsbVestDevice(cfg.usbPort)
+    else:
+        vest = vest_device.BleVestDevice(cfg.device)
     
     camera_service.start()
     

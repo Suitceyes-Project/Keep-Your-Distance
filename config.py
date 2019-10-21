@@ -29,7 +29,9 @@ with open("config.json", "r") as json_file:
     camMatrix = np.array(data["camMatrix"])
     camCenter = data["camCenter"]
     calibrate = data["calibrate"]
-    useFisheye = data["useFisheye"]    
+    useFisheye = data["useFisheye"]
+    deviceMode = int(data["deviceMode"])
+    usbPort = data["usbPort"]
     
 
 def get_marker_id(side):

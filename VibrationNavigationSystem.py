@@ -62,9 +62,9 @@ class VibrationNavigationSystem:
             i = int(index)
             if i in actuators:
                 #print("Vibrating pin at index: " + index)
-                self._device.setPin(i, 255)
+                self._device.set_pin(i, 255)
             else:
-                self._device.setPin(i, 0)
+                self._device.set_pin(i, 0)
     
     def _fetch_actuators_from_angle(self, angle):
         actuatorRanges = cfg.actuatorRanges
@@ -98,8 +98,8 @@ class VibrationNavigationSystem:
         minDistance = min(distances)
         
         if minDistance < cfg.minDistance:
-            self._device.setFrequency(cfg.frequencyClose)
+            self._device.set_frequency(cfg.frequencyClose)
         elif minDistance > cfg.minDistance and minDistance < cfg.maxDistance:
-            self._device.setFrequency(cfg.frequencyOptimal)
+            self._device.set_frequency(cfg.frequencyOptimal)
         else:
-            self._device.setFrequency(cfg.frequencyFar)     
+            self._device.set_frequency(cfg.frequencyFar)     

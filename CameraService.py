@@ -4,9 +4,9 @@ import cv2 as cv
 import config as cfg
 import numpy as np
 from threading import Thread
-from threading import Lock
+
 class CameraService:
-    lock = Lock()
+
     def __init__(self):
         self._stopped = False
         self._grabbed = False
@@ -43,6 +43,7 @@ class CameraService:
                 return
             
             (grabbed, frame) = self._cap.read()
+
             if cfg.useFisheye:
                 self._frame = fisheye_calibration.undistort_frame(frame, self._cam_matrix, self._dist_coeffs)
             else:

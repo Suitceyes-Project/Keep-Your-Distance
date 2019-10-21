@@ -1,6 +1,30 @@
 from bluepy.btle import UUID, Peripheral
+import PyCmdMessenger
+from abc import ABC, abstractmethod
 
-class VestDevice:
+class VestDevice(ABC):
+    
+    @abstractmethod
+    def set_pin(self, index, intensity):
+        pass
+    
+    @abstractmethod
+    def set_frequency(self, frequency):
+        pass
+    
+    @abstractmethod
+    def mute(self):
+        pass
+    
+    @abstractmethod
+    def set_motor(self, index, rotation):
+        pass
+    
+    @abstractmethod
+    def set_motor_speed(self, speed):
+        pass
+
+class BleVestDevice(VestDevice):
     def __init__(self, deviceAddr):
         try:
             self._peripheral = Peripheral(deviceAddr)
@@ -17,7 +41,7 @@ class VestDevice:
     def __write(self, byteArr):
         self._peripheral.writeCharacteristic(self._characteristic.getHandle(), byteArr)
             
-    def setPin(self, index, intensity):
+    def set_pin(self, index, intensity):
         """Sets a pin to a given intensity.
         index: an integer from 0 - 6
         intensity: an integer from 0 - 255
@@ -26,7 +50,7 @@ class VestDevice:
             rList=[0,index,intensity]
             self.__write(bytes(rList))
             
-    def setFrequency(self,frequency):
+    def set_frequency(self,frequency):
         """Sets the frequency of the entire vest.
         frequency.
         """
@@ -41,7 +65,7 @@ class VestDevice:
             rList=[3]
             self.__write(bytes(rList))
     
-    def setMotor(self,index,rotation):
+    def set_motor(self,index,rotation):
         """
         Sets a given motor index to a given target rotation.
         """
@@ -49,7 +73,7 @@ class VestDevice:
             rList = [11,index,rotation]
             self.__write(bytes(rList))
             
-    def setMotorSpeed(self,speed):
+    def set_motor_speed(self,speed):
         """
         Changes how long it takes to move 1 degree per millisecond.
         """
@@ -57,3 +81,94 @@ class VestDevice:
             raise ValueError("speed must be greater than 0.")
         rList = [12,speed]
         self.__write(bytes(rList))
+        
+class UsbVestDevice:
+    """
+    Basic interface for sending commands to the vest using a
+    serial port connection.
+    """
+
+    commands = [["PinSet","gg"],
+                ["PinMute","g"],
+                ["GloveSet","g*"],
+                ["GloveMute",""],
+                ["FreqSet","g"],
+                ["PinGet","g"],
+                ["FreqGet",""],
+                ["PinState","gg"],
+                ["FreqState","g"],
+                ["StringMsg","s"],
+                ["DebugSet","g"],
+                ["SetMotor", "gg"],
+                ["SetMotorSpeed", "g"]]
+
+    def __init__(self, device):
+        """
+        Creates a new instance of Vest.
+        Inputs:        
+            device:
+                The path to the device, e.g.: "/dev/ttyACM0" or "COM3"
+        """
+        self._board = PyCmdMessenger.ArduinoBoard(device, baud_rate=115200)
+        self._connection = PyCmdMessenger.CmdMessenger(self._board, UsbVestDevice.commands, warnings=False)        
+
+    def __enter__(self):
+        self.set_frequency(0)
+        return self
+
+    def __exit__(self, type, value, traceback):
+        # Make sure the vest is muted and that the connection is closed.
+        self.mute()
+        self._board.close()
+
+    def set_pin(self,pin,value):
+        """
+        Sets a pin to a given value. This sets the vibration intensity of a given pin.
+        Inputs:
+            pin: 
+                The pin index whose value should be set. This should be a byte value.
+            value:
+                A byte value (0-255) representing the vibration intensity. 0 is no vibration, 255
+                is the max intensity.
+        """
+        self._connection.send("PinSet",pin,value)
+
+    def mute_pin(self,pin):
+        """
+        Sets the vibration intensity for a given pin to 0.
+        Inputs:
+            pin: The pin which will be muted.
+        """
+        self._connection.send("PinMute", pin)
+
+    def mute(self):
+        """
+        Mutes all pins on the vest.
+        """
+        self._connection.send("GloveMute")
+    
+    def set_frequency(self,frequency):
+        """
+        Sets the frequency of the entire vest.
+        Inputs:
+            frequency: The frequency in milliseconds.
+        """
+        self._connection.send("FreqSet", frequency)
+    
+    def get_pin(self,pin):
+        """
+        Gets the vibration intensity for a given pin.
+        Inputs:
+            pin: The pin index whose intensity should be fetched.
+        """
+        self._connection.send("PinGet", pin)
+        return self._connection.receive()
+    
+    def set_motor(self,index,rotation):
+        self._connection.send("SetMotor",index,rotation)
+        
+    def set_motor_speed(self,speed):
+        """
+        Changes how long it takes to move 1 degree per millisecond.
+        """
+        self._connection.send("SetMotorSpeed", speed)

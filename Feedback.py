@@ -24,7 +24,7 @@ class Feedback:
 class FeedbackSystem:
     def __init__(self, vest):
         self._vest = vest
-        self._vest.setMotorSpeed(1)
+        self._vest.set_motor_speed(1)
         self._rotation = 0 # represents a rotation direction (back or forth)
         self._last_update = time.time()
         
@@ -49,7 +49,7 @@ class FeedbackSystem:
         
         # for each motor set the rotation
         for i in range(0, len(Feedback.current.pins)):
-            self._vest.setMotor(Feedback.current.pins[i], (45 , 135)[self._rotation == 0])
+            self._vest.set_motor(Feedback.current.pins[i], (45 , 135)[self._rotation == 0])
         
         # change rotation direction and update last time
         self._rotation = (self._rotation + 1) % 2
