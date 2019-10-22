@@ -4,12 +4,14 @@ import cv2 as cv
 import config as cfg
 import numpy as np
 from threading import Thread
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 
 class CameraService:
 
     def __init__(self):
         self._stopped = False
-        self._grabbed = False
+        self._grabbed = False        
         self._frame = None
         if cfg.calibrate:
             self._focal_length, self._cam_center, self._cam_matrix, self._dist_coeffs = (fisheye_calibration.fast_calibrate(), camera_calibration.fast_calibrate())[cfg.useFisheye]
@@ -20,15 +22,16 @@ class CameraService:
             self._dist_coeffs = cfg.distortCoeffs
         
     def __enter__(self):
-        self._cap = cv.VideoCapture(cfg.camera) # 0 webcam of laptop # 1 external cam
-        self._cap.set(cv.CAP_PROP_FRAME_WIDTH, cfg.resolutionX)
-        self._cap.set(cv.CAP_PROP_FRAME_HEIGHT, cfg.resolutionY)
-        self._cap.set(cv.CAP_PROP_FPS, 30)
+        self._camera = PiCamera()
+        self._camera.resolution = (cfg.resolutionX, cfg.resolutionY)
+        self._camera.framerate = 30
+        self._rawCapture = PiRGBArray(self._camera, size = (cfg.resolutionX, cfg.resolutionY))
+        self._stream = self._camera.capture_continuous(self._rawCapture, format="bgr", use_video_port=True)
         return self
         
     def __exit__(self, exc_type, exc_value, traceback):
         print("Releasing video capture")
-        self._cap.release()
+        self.stop()
     
     def start(self):
         Thread(target=self.update, args=()).start()
@@ -38,17 +41,21 @@ class CameraService:
         self._stopped = True
     
     def update(self):
-        while True:
-            if self._stopped:
-                return
-            
-            (grabbed, frame) = self._cap.read()
-
+        for f in self._stream:
+            frame = f.array
+            self._rawCapture.truncate(0)
             if cfg.useFisheye:
                 self._frame = fisheye_calibration.undistort_frame(frame, self._cam_matrix, self._dist_coeffs)
             else:
                 self._frame = frame
-            self._grabbed = grabbed
+            self._grabbed = True
+            
+            if self._stopped:
+                self._stream.close()
+                self._rawCapture.close()
+                self._camera.close()
+                return
+        
     
     def get_matrix(self):
         return self._cam_matrix

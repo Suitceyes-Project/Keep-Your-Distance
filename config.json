@@ -71,7 +71,7 @@
 	"catchThiefAfterTime" : 10,	
 	"dangerTime": 10,
 	"device": "10:d0:7a:16:b8:d7",
-	"deviceMode": 0,
+	"deviceMode": 1,
 	"distortCoeffs": [
 		[
 			-0.018834895601580342
