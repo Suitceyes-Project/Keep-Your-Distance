@@ -70,7 +70,7 @@
 	"camera": 0,
 	"dangerTime": 10,
 	"device": "10:d0:7a:16:b8:d7",
-	"deviceMode": 0,
+	"deviceMode": 1,
 	"distortCoeffs": [
 		[
 			-0.018834895601580342
@@ -114,7 +114,7 @@
 	"resolutionX": 1280,
 	"resolutionY": 720,
 	"targetLookAtThreshold": 0.3,
-	"timeStep": 0.16,
+	"timeStep": 0.016,
 	"usbPort": "/dev/ttyACM0",
 	"useFisheye": true
 }
