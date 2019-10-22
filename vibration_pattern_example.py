@@ -12,7 +12,8 @@ atexit.register(exit_handler)
 
 #device = vest_device.UsbVestDevice("/dev/ttyACM0")
 device = vest_device.BleVestDevice("10:d0:7a:16:b8:d7")
-with open("vibration_patterns/catch_thief.json") as json_file:
+#with open("vibration_patterns/catch_thief.json") as json_file:
+with open("vibration_patterns/heartbeat.json") as json_file:
     clip = json.load(json_file)
 vest_controller = VibrationController.VestController(device)
 player = VibrationPatterns.VibrationPatternPlayer(vest_controller)
@@ -25,6 +26,8 @@ while(True):
     current_time = time.time()
     deltaTime = current_time - time_prev_frame    
     player.update(deltaTime)
+    if player.is_playing == False:
+        break
     time_prev_frame = current_time
     #print(deltaTime)
     time.sleep(0.016)

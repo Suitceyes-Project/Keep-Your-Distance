@@ -40,3 +40,4 @@ class VestController:
         if self._actuatorValues[index] != v:
             self._actuatorValues[index] = v            
             self._device.set_pin(index, v)
+            #print("Setting index: " + str(index) + " to: " + str(v))

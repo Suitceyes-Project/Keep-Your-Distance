@@ -43,7 +43,7 @@ class VibrationPatternPlayer:
 
     def play_clip(self, clip):
         self._current_time = 0
-        #self._vest_controller.set_frequency(0)
+        self._vest_controller.set_frequency(0)
         self.speed = 1
         self.is_playing = True
         self._clip = clip
