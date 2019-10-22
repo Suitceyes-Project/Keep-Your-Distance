@@ -126,7 +126,8 @@ class CatchThiefState(StateMachine.State):
 
     def update(self, deltaTime):
         self._vpp.update(deltaTime)
-        if _vpp.is_playing == False:
+        if self._vpp.is_playing == False:
+            print("Changing back to navigation")
             self._state_machine.change_to("navigation")
 
     def exit(self):

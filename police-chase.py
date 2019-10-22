@@ -55,10 +55,11 @@ with CameraService() as camera_service, \
     vest_controller = VestController(vest)
     vibration_pattern_player = VibrationPatternPlayer(vest_controller)
     catch_thief_condition = CatchThief.CatchThiefCondition()
-    catch_thief_event_handler = CatchThief.CatchThiefEventHandler()
+    
     
     # create states
     state_machine = StateMachine()
+    catch_thief_event_handler = CatchThief.CatchThiefEventHandler(state_machine)
     navigation = States.NavigationState(vest_controller, marker_service)
     catch_thief = States.CatchThiefState(vest_controller, vibration_pattern_player, state_machine)    
     state_machine.add_state("navigation", navigation)

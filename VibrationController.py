@@ -23,7 +23,7 @@ class VestController:
     
     def clear_mask(self):
         for key in self._actuatorsMask:
-            self._actuatorsMask[key] = 0
+            self._actuatorsMask[key] = 1
     
     def set_frequency(self, frequency):
         self._device.set_frequency(frequency)

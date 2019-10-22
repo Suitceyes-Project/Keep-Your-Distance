@@ -32,6 +32,7 @@ with open("config.json", "r") as json_file:
     useFisheye = data["useFisheye"]
     deviceMode = int(data["deviceMode"])
     usbPort = data["usbPort"]
+    catchThiefAfterTime = data["catchThiefAfterTime"]
     
 
 def get_marker_id(side):

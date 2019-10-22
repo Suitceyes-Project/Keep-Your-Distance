@@ -65,7 +65,6 @@ class VibrationPatternPlayer:
             else:
                 self._vest_controller.mute()
                 self.is_playing = False
-                return
-            
-        #print(self._current_time)
+                return            
+        
         self.sample(self._current_time)
