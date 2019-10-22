@@ -1,14 +1,18 @@
 import StateMachine
 import numpy as np
 import config as cfg
+import json
 
 class NavigationState(StateMachine.State):
 
-    def __init__(self, device, marker_service):
-        self._device = device
+    def __init__(self, vest_controller, marker_service):
+        self._device = vest_controller
         self._marker_service = marker_service
 
     def enter(self):
+        return
+    
+    def exit(self):
         return
 
     def update(self, deltaTime):
@@ -17,7 +21,6 @@ class NavigationState(StateMachine.State):
         
         # regulate frequency according to distance 
         self._regulate_frequency()
-        pass
     
     def _regulate_direction(self):
         # get all markers
@@ -67,9 +70,9 @@ class NavigationState(StateMachine.State):
             i = int(index)
             if i in actuators:
                 #print("Vibrating pin at index: " + index)
-                self._device.set_pin(i, 255)
+                self._device.vibrate(i, 255)
             else:
-                self._device.set_pin(i, 0)
+                self._device.vibrate(i, 0)
     
     def _fetch_actuators_from_angle(self, angle):
         actuatorRanges = cfg.actuatorRanges
@@ -107,4 +110,24 @@ class NavigationState(StateMachine.State):
         elif minDistance > cfg.minDistance and minDistance < cfg.maxDistance:
             self._device.set_frequency(cfg.frequencyOptimal)
         else:
-            self._device.set_frequency(cfg.frequencyFar)     
+            self._device.set_frequency(cfg.frequencyFar)
+            
+class CatchThiefState(StateMachine.State):
+    def __init__(self, vest_controller, vibration_pattern_player, state_machine):
+        self._vest_controller = vest_controller
+        self._vpp = vibration_pattern_player
+        self._state_machine = state_machine
+        with open("vibration_patterns/catch_thief.json") as json_file:
+            self._clip = json.load(json_file)
+            
+    def enter(self):
+        self._vest_controller.clear_mask()
+        self._vpp.play_clip(self._clip)
+
+    def update(self, deltaTime):
+        self._vpp.update(deltaTime)
+        if _vpp.is_playing == False:
+            self._state_machine.change_to("navigation")
+
+    def exit(self):
+        return
