@@ -14,6 +14,12 @@ from ProximityConditionSystem import ProximityConditionSystem
 from Game import Game
 from TargetLookAtSystem import TargetLookAtSystem
 from Feedback import FeedbackSystem
+from StateMachine import StateMachine
+import States
+from VibrationController import VestController
+import CatchThief
+from VibrationPatterns import VibrationPatternPlayer
+
 
 print("entered police-chase script", flush=True)
 
@@ -24,7 +30,6 @@ delta = 0.0
 sleep_time = cfg.timeStep
 time_prev_frame = time.time()
 game = Game()
-
 
 
 # make sure camera is released
@@ -42,11 +47,24 @@ with CameraService() as camera_service, \
     
     # create systems
     marker_detection_system = MarkerDetectionSystem(marker_service, camera_service)
-    vibration_navigation_system = VibrationNavigationSystem(vest, marker_service)
+    #vibration_navigation_system = VibrationNavigationSystem(vest, marker_service)
     marker_transformation_system = MarkerTransformationSystem(marker_service, camera_service)
     proximity_condition_system = ProximityConditionSystem(game, marker_service)
     target_look_at_system = TargetLookAtSystem(marker_service)
     feedback_system = FeedbackSystem(vest)
+    vest_controller = VestController(vest)
+    vibration_pattern_player = VibrationPatternPlayer(vest_controller)
+    catch_thief_condition = CatchThief.CatchThiefCondition()
+    
+    
+    # create states
+    state_machine = StateMachine()
+    catch_thief_event_handler = CatchThief.CatchThiefEventHandler(state_machine)
+    navigation = States.NavigationState(vest_controller, marker_service)
+    catch_thief = States.CatchThiefState(vest_controller, vibration_pattern_player, state_machine)    
+    state_machine.add_state("navigation", navigation)
+    state_machine.add_state("catch-thief", catch_thief)
+    state_machine.change_to("navigation")
     
     # start the game
     game.start()
@@ -70,7 +88,9 @@ with CameraService() as camera_service, \
             marker_detection_system.update()
             marker_transformation_system.update()
             camera_rendering_system.update()
-            vibration_navigation_system.update()
+            catch_thief_condition.update(delta)
+            state_machine.update(delta)
+            #vibration_navigation_system.update()
             target_look_at_system.update()
             feedback_system.update()
             #proximity_condition_system.update(delta)

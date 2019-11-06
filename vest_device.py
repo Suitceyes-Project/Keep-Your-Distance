@@ -90,7 +90,7 @@ class UsbVestDevice:
 
     commands = [["PinSet","gg"],
                 ["PinMute","g"],
-                ["GloveSet","g*"],
+                ["GloveSet","gg*"],
                 ["GloveMute",""],
                 ["FreqSet","g"],
                 ["PinGet","g"],
@@ -154,6 +154,16 @@ class UsbVestDevice:
             frequency: The frequency in milliseconds.
         """
         self._connection.send("FreqSet", frequency)
+        
+    def set_vest(self, pin_value_dict, frequency):
+        values = []
+
+        for key in pin_value_dict:
+            values.append(key)
+            values.append(pin_value_dict[key])
+        
+        values.append(frequency)
+        self._connection.send("GloveSet", *values)
     
     def get_pin(self,pin):
         """

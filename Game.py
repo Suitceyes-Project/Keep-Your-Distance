@@ -8,6 +8,9 @@ class Game:
         self._game_duration = cfg.gameDuration
         self._did_win = False
         self._is_running = False
+        
+    def can_catch_thief(self):
+        return self._can_catch_thief
 
     @property
     def is_over(self):
@@ -28,7 +31,8 @@ class Game:
         self._elapsed_time = 0
     
     def update(self, delta_time):
-        self._elapsed_time += delta_time
+        self._elapsed_time += delta_time      
+
         if self._elapsed_time > self._game_duration:
             self.end(False)        
     
