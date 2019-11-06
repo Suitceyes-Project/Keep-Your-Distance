@@ -19,7 +19,7 @@ import States
 from VibrationController import VestController
 import CatchThief
 from VibrationPatterns import VibrationPatternPlayer
-
+import listeners
 
 print("entered police-chase script", flush=True)
 
@@ -30,7 +30,7 @@ delta = 0.0
 sleep_time = cfg.timeStep
 time_prev_frame = time.time()
 game = Game()
-
+real_time_message_bus = listeners.RealtimeMessageBus()
 
 # make sure camera is released
 with CameraService() as camera_service, \
@@ -66,6 +66,8 @@ with CameraService() as camera_service, \
     state_machine.add_state("catch-thief", catch_thief)
     state_machine.change_to("navigation")
     
+    catch_thief_listener = listeners.CatchThiefMessageListener(state_machine, real_time_message_bus)
+    
     # start the game
     game.start()
     
@@ -88,7 +90,7 @@ with CameraService() as camera_service, \
             marker_detection_system.update()
             marker_transformation_system.update()
             camera_rendering_system.update()
-            catch_thief_condition.update(delta)
+            #catch_thief_condition.update(delta)
             state_machine.update(delta)
             #vibration_navigation_system.update()
             target_look_at_system.update()

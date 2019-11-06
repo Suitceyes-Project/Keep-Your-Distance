@@ -121,6 +121,7 @@ class CatchThiefState(StateMachine.State):
             self._clip = json.load(json_file)
             
     def enter(self):
+        print("entering catch thief state")
         self._vest_controller.clear_mask()
         self._vpp.play_clip(self._clip)
 
