@@ -95,7 +95,7 @@ with CameraService() as camera_service, \
             #vibration_navigation_system.update()
             target_look_at_system.update()
             feedback_system.update()
-            #proximity_condition_system.update(delta)
+            proximity_condition_system.update(delta)
             
             # reset timer
             delta = 0.0

@@ -30,7 +30,8 @@ class ProximityConditionSystem:
                 # if time > max time allowed
                 if self._time_in_danger > self._max_time_in_danger:
                     # end game
-                    self._game.end(False)
+                    print("Got too close. Game would usually end here", flush=True)
+                    #self._game.end(False)
             elif self._is_in_danger == True:
                 self._decrease_time(delta_time)
     
