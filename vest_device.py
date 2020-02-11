@@ -24,6 +24,22 @@ class VestDevice(ABC):
     def set_motor_speed(self, speed):
         pass
 
+class DummyVestDevice(VestDevice):
+    def set_pin(self, index, intensity):
+        pass
+    
+    def set_frequency(self, frequency):
+        pass
+    
+    def mute(self):
+        pass
+    
+    def set_motor(self, index, rotation):
+        pass
+    
+    def set_motor_speed(self, speed):
+        pass
+
 class BleVestDevice(VestDevice):
     def __init__(self, deviceAddr):
         try:

@@ -19,13 +19,15 @@ import States
 from VibrationController import VestController
 import CatchThief
 from VibrationPatterns import VibrationPatternPlayer
+from ProgressRequestSystem import ProgressRequestSystem
 import listeners
 
 print("entered police-chase script", flush=True)
 
 # create services
 marker_service = MarkerService()
-
+message_interval = 5
+last_message = time.time()
 delta = 0.0
 sleep_time = cfg.timeStep
 time_prev_frame = time.time()
@@ -38,7 +40,9 @@ with CameraService() as camera_service, \
      CameraRenderingSystem(camera_service) as camera_rendering_system:
 
     # Initialize connection to the vest
-    if cfg.deviceMode == 0:
+    if cfg.deviceMode == -1:
+        vest = vest_device.DummyVestDevice()
+    elif cfg.deviceMode == 0:
         vest = vest_device.UsbVestDevice(cfg.usbPort)
     else:
         vest = vest_device.BleVestDevice(cfg.device)
@@ -55,7 +59,7 @@ with CameraService() as camera_service, \
     vest_controller = VestController(vest)
     vibration_pattern_player = VibrationPatternPlayer(vest_controller)
     catch_thief_condition = CatchThief.CatchThiefCondition()
-    
+    progress_request_system = ProgressRequestSystem()
     
     # create states
     state_machine = StateMachine()
@@ -85,8 +89,14 @@ with CameraService() as camera_service, \
             if(delta < sleep_time):
                 continue
             
+            # this just prints a message every x seconds
+            if current_time - last_message > message_interval:
+                print("Game running", flush=True)
+                last_message = current_time
+            
             # update systems
             game.update(delta)
+            progress_request_system.update(delta)
             marker_detection_system.update()
             marker_transformation_system.update()
             camera_rendering_system.update()

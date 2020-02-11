@@ -33,6 +33,7 @@ with open("config.json", "r") as json_file:
     deviceMode = int(data["deviceMode"])
     usbPort = data["usbPort"]
     catchThiefAfterTime = data["catchThiefAfterTime"]
+    buttonGpioPort= int(data["button_gpio_pin"])
     
 
 def get_marker_id(side):
