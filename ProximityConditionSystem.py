@@ -9,8 +9,12 @@ class ProximityConditionSystem:
         self._max_time_in_danger = cfg.dangerTime        
         self._time_in_danger = 0
         self._distances = []
+        self._is_condition_met = False
         
     def update(self, delta_time):
+        if self._is_condition_met == True:
+            return
+        
         markers = self._marker_service.get_markers()
         
         if markers is None:
@@ -29,6 +33,7 @@ class ProximityConditionSystem:
                 self._increase_time(delta_time)
                 # if time > max time allowed
                 if self._time_in_danger > self._max_time_in_danger:
+                    self._is_condition_met = True
                     # end game
                     print("Got too close. Game would usually end here", flush=True)
                     #self._game.end(False)
