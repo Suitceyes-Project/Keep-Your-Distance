@@ -133,3 +133,39 @@ class CatchThiefState(StateMachine.State):
 
     def exit(self):
         return
+    
+class RequestProgressState(StateMachine.State):
+    
+    def __init__(self, vest_controller, vibration_pattern_player, state_machine, game):
+        self._vest_controller = vest_controller
+        self._vpp = vibration_pattern_player
+        self._state_machine = state_machine
+        self._game = game
+        self._clips = { }
+        
+        with open("vibration_patterns/25_percent.json") as json_file:
+            self._clips[25] = json.load(json_file)
+        
+        with open("vibration_patterns/50_percent.json") as json_file:
+            self._clips[50] = json.load(json_file)
+            
+        with open("vibration_patterns/75_percent.json") as json_file:
+            self._clips[75] = json.load(json_file)
+            
+
+    def enter(self):        
+        self._vest_controller.clear_mask()
+        print("Request made. Progress is at: " + str(self._game.progress) + "%", flush=True)
+        if self._game.progress == 0 or self._game.progress == 25:            
+            self._vpp.play_clip(self._clips[25])
+        else:
+            self._vpp.play_clip(self._clips[self._game.progress])
+
+    def update(self, deltaTime):
+        self._vpp.update(deltaTime)
+        if self._vpp.is_playing == False:
+            print("Changing back to navigation")
+            self._state_machine.change_to("navigation")
+
+    def exit(self):
+        return

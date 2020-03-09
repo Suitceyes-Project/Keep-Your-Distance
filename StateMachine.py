@@ -19,6 +19,9 @@ class StateMachine:
         self._states = {}
         self._current = None
         self._current_name = ''
+    
+    def is_in_state(self, stateName):
+        return self._current_name == stateName
 
     def add_state(self, stateName, state):
         self._states[stateName] = state

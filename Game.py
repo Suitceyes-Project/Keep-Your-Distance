@@ -1,6 +1,6 @@
 import config as cfg
 
-class Game:
+class Game:   
 
     def __init__(self):
         self._is_over = False
@@ -8,9 +8,18 @@ class Game:
         self._game_duration = cfg.gameDuration
         self._did_win = False
         self._is_running = False
+        self._progress = 0
         
     def can_catch_thief(self):
         return self._can_catch_thief
+    
+    @property
+    def progress(self):
+        return self._progress
+    
+    @progress.setter
+    def progress(self, value):
+        self._progress = value
 
     @property
     def is_over(self):

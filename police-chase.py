@@ -37,16 +37,10 @@ real_time_message_bus = listeners.RealtimeMessageBus()
 # make sure camera is released
 with CameraService() as camera_service, \
      LoggingSystem(marker_service) as logging_system, \
-     CameraRenderingSystem(camera_service) as camera_rendering_system:
+     CameraRenderingSystem(camera_service) as camera_rendering_system:     
 
-    # Initialize connection to the vest
-    if cfg.deviceMode == -1:
-        vest = vest_device.DummyVestDevice()
-    elif cfg.deviceMode == 0:
-        vest = vest_device.UsbVestDevice(cfg.usbPort)
-    else:
-        vest = vest_device.BleVestDevice(cfg.device)
-    
+     #vest_device.I2CVestDevice(0x41, 0x40) as vest:
+    vest = vest_device.DummyVestDevice()
     camera_service.start()
     
     # create systems
@@ -58,19 +52,22 @@ with CameraService() as camera_service, \
     feedback_system = FeedbackSystem(vest)
     vest_controller = VestController(vest)
     vibration_pattern_player = VibrationPatternPlayer(vest_controller)
-    catch_thief_condition = CatchThief.CatchThiefCondition()
-    progress_request_system = ProgressRequestSystem()
+    catch_thief_condition = CatchThief.CatchThiefCondition()    
     
     # create states
-    state_machine = StateMachine()
+    state_machine = StateMachine()    
     catch_thief_event_handler = CatchThief.CatchThiefEventHandler(state_machine)
     navigation = States.NavigationState(vest_controller, marker_service)
     catch_thief = States.CatchThiefState(vest_controller, vibration_pattern_player, state_machine)    
+    request_progress = States.RequestProgressState(vest_controller, vibration_pattern_player, state_machine, game)
     state_machine.add_state("navigation", navigation)
     state_machine.add_state("catch-thief", catch_thief)
+    state_machine.add_state("request-progress", request_progress)
     state_machine.change_to("navigation")
     
     catch_thief_listener = listeners.CatchThiefMessageListener(state_machine, real_time_message_bus)
+    set_progress_listener = listeners.SetProgressMessageListener(real_time_message_bus, game)
+    progress_request_system = ProgressRequestSystem(state_machine)
     
     # start the game
     game.start()
