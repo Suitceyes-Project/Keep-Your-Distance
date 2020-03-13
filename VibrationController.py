@@ -1,19 +1,17 @@
-import config as cfg
-
 class VestController:
 
-    def __init__(self, device):
+    def __init__(self, device, actuatorPins):
         self._device = device
         self._device.set_frequency(0)
         self._actuatorsMask = {}
         self._actuatorValues = {}
         # 1 indicates that actuator is being used
-        for actuator in cfg.actuators:
+        for actuator in actuatorPins:
             self._actuatorsMask[int(actuator)] = 1
             self._actuatorValues[int(actuator)] = 0
 
     def get_actuator_indices(self):
-        return list(cfg.actuators.keys())  
+        return list(self._actuatorValues.keys())  
 
     def set_mask(self, pin):
         self._actuatorsMask[int(pin)] = 0
@@ -38,3 +36,6 @@ class VestController:
             v = 0
         
         self._device.set_pin(index, v)
+    
+    def vibrate_batched(self, vibration_values : dict):
+        pass # todo: implement this

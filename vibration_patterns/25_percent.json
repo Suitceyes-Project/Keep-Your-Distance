@@ -1,6 +1,7 @@
 {
   "isLooped": false,
   "duration": 1.6,
+  "interpolation" : 0,
   "frames": [
     {
       "time": 0,
