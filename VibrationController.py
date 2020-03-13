@@ -38,4 +38,4 @@ class VestController:
         self._device.set_pin(index, v)
     
     def vibrate_batched(self, vibration_values : dict):
-        self._device.set_pin_batched(vibration_values)
+        self._device.set_pins_batched(vibration_values)

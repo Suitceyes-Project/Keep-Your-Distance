@@ -84,6 +84,9 @@ class VibrationPatternPlayer:
             
 
     def _interpolate(self, start_value, end_value, start_time, end_time, current_time):
+        if ("interpolation" in self._clip.keys()) == False:
+            return start_time
+
         method = self._clip["interpolation"]
         t = (current_time - start_time) / (end_time - start_time)
         switcher = {            
