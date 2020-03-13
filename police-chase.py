@@ -50,7 +50,7 @@ with CameraService() as camera_service, \
     proximity_condition_system = ProximityConditionSystem(game, marker_service)
     target_look_at_system = TargetLookAtSystem(marker_service)
     feedback_system = FeedbackSystem(vest)
-    vest_controller = VestController(vest)
+    vest_controller = VestController(vest, range(32))
     vibration_pattern_player = VibrationPatternPlayer(vest_controller)
     catch_thief_condition = CatchThief.CatchThiefCondition()    
     

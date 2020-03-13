@@ -37,7 +37,10 @@ class I2CVestDevice(VestDevice):
         pass
 
     def set_pins_batched(self, values = dict):
-        pass
+        for key in values:
+            values[key] = values[key]/255     
+        self._driver.set_vibration_batched(values)
+
 
 class BleVestDevice(VestDevice):
     def __init__(self, deviceAddr):
