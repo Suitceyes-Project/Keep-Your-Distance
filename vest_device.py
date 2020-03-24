@@ -1,7 +1,7 @@
 from bluepy.btle import UUID, Peripheral
 import PyCmdMessenger
 import sys
-import VestDeviceBase
+from VestDeviceBase import VestDevice
 sys.path.insert(1, '/home/pi/Documents/PCA9685-Controller')
 from suitceyes import VibrationMotorDriver
 
