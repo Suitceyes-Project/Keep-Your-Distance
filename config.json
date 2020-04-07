@@ -103,16 +103,7 @@
 	"maxDistance": 1.5,
 	"minDistance": 0.5,
 	"motorInterval": 0.2,
-	"motors": {
-		"front": [
-			0,
-			1
-		],
-		"back": [
-			2,
-			3
-		]
-	},
+	"shoulderMotors": [0],
 	"resolutionX": 1280,
 	"resolutionY": 720,
 	"targetLookAtThreshold": 0.3,

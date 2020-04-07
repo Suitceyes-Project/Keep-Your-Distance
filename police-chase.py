@@ -37,20 +37,19 @@ real_time_message_bus = listeners.RealtimeMessageBus()
 # make sure camera is released
 with CameraService() as camera_service, \
      LoggingSystem(marker_service) as logging_system, \
-     CameraRenderingSystem(camera_service) as camera_rendering_system:     
-
-     #vest_device.I2CVestDevice(0x41, 0x40) as vest:
-    vest = vest_device.DummyVestDevice()
+     CameraRenderingSystem(camera_service) as camera_rendering_system, \
+     vest_device.I2CVestDevice(0x40) as vest:
+    #vest = vest_device.DummyVestDevice()
     camera_service.start()
     
     # create systems
     marker_detection_system = MarkerDetectionSystem(marker_service, camera_service)
     #vibration_navigation_system = VibrationNavigationSystem(vest, marker_service)
     marker_transformation_system = MarkerTransformationSystem(marker_service, camera_service)
-    proximity_condition_system = ProximityConditionSystem(game, marker_service)
-    target_look_at_system = TargetLookAtSystem(marker_service)
+    proximity_condition_system = ProximityConditionSystem(game, marker_service)    
     feedback_system = FeedbackSystem(vest)
     vest_controller = VestController(vest)
+    target_look_at_system = TargetLookAtSystem(marker_service, vest_controller)
     vibration_pattern_player = VibrationPatternPlayer(vest_controller)
     catch_thief_condition = CatchThief.CatchThiefCondition()    
     

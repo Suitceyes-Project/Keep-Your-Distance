@@ -20,7 +20,7 @@ with open("config.json", "r") as json_file:
     actuatorRanges = data["actuatorRanges"]
     targetLookAtThreshold = data["targetLookAtThreshold"]
     dangerTime = data["dangerTime"]
-    motors = data["motors"]
+    shoulderMotors = data["shoulderMotors"]
     motorInterval = data["motorInterval"]
     resolutionX = data["resolutionX"]
     resolutionY = data["resolutionY"]
