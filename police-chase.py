@@ -20,6 +20,7 @@ from VibrationController import VestController
 import CatchThief
 from VibrationPatterns import VibrationPatternPlayer
 from ProgressRequestSystem import ProgressRequestSystem
+from MqttMessageService import MqttMessageService
 import listeners
 
 print("entered police-chase script", flush=True)
@@ -38,7 +39,8 @@ real_time_message_bus = listeners.RealtimeMessageBus()
 with CameraService() as camera_service, \
      LoggingSystem(marker_service) as logging_system, \
      CameraRenderingSystem(camera_service) as camera_rendering_system, \
-     vest_device.I2CVestDevice(0x40) as vest:
+     vest_device.I2CVestDevice(0x40) as vest, \
+     MqttMessageService() as message_service:
     #vest = vest_device.DummyVestDevice()
     camera_service.start()
     
@@ -64,8 +66,8 @@ with CameraService() as camera_service, \
     state_machine.add_state("request-progress", request_progress)
     state_machine.change_to("navigation")
     
-    catch_thief_listener = listeners.CatchThiefMessageListener(state_machine, real_time_message_bus)
-    set_progress_listener = listeners.SetProgressMessageListener(real_time_message_bus, game)
+    catch_thief_listener = listeners.CatchThiefMessageListener(state_machine, message_service)
+    set_progress_listener = listeners.SetProgressMessageListener(message_service, game)
     progress_request_system = ProgressRequestSystem(state_machine)
     
     # start the game
