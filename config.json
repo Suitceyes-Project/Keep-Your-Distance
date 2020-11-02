@@ -109,5 +109,15 @@
 	"targetLookAtThreshold": 0.3,
 	"timeStep": 0.0333,
 	"usbPort": "/dev/ttyACM0",
-	"useFisheye": true
+	"useFisheye": true,
+	"ServerUri" : "mqtt.ably.io",
+	"Port" : 8883,
+	"CleanSession": true,
+	"Username" : "GIn8xA.lwvRbg",
+	"Password": "mmkCycAbnYQvmZxS",
+	"SSL_TLS": true,
+	"Topics" : [
+		"suitceyes/kyd/CatchThief",
+		"suitceyes/kyd/SetProgress"
+  ]
 }
