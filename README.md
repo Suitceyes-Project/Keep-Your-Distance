@@ -1,51 +1,54 @@
-# police-chase
+# Keep Your Distance
+Keep Your Distance (previously Police Chase) was a game designed over the course of the [Suitceyes]("http://www.suitceyes.eu") research project, funded by the EU, with the aim of teaching deafblind individuals to navigate with the HIPI (Haptic Intelligent Personalized Interface) safely. The game involves two players where one assumes the role of a secret agent (player wearing the HIPI) and the other acts as a suspect. The goal of the secret agent is to keep within an optimal distance to the suspect. While getting too close to the suspect will expose the secret agent's cover, staying too far from the suspect will enable him/her to escape. At the end of the game, we provide a cue that the agent can *catch* the suspect to win the game.
 
-## Setup
+The application uses a wide-angle camera to track ArUco markers which represent the suspect. Through computer vision algorithms we are able to estimate the distance and the angle to the marker. Depending on these two parameters we can provide different cues to the wearer of the HIPI:
+* Varying frequency levels of vibration (quicker pulses mean the agent is getting too close to the suspect, slower pulses mean the agent is too far from the suspect)
+* Local vibrations on the tactile belt of the HIPI: These indicate the direction the wearer must move towards in order to follow the suspect. 
 
-1. install python
-2. install via pip3
-	- numpy
-	- opencv-python
-	- opencv.aruco
-	- opencv-contrib-python
-	- matplotlib
-    - matplotlib.pyplot
-    - PIL.Image
-    - os
-    - os.path
-    - time
-    - csv
-    - bluepy ("https://github.com/IanHarvey/bluepy")
+We use a Wizard of Oz style application to provide signals to the user, e.g., when the agent can *catch* the suspect.
+This application can be found [here]("https://github.com/AffectiveCognitiveInstitute/police-chase-unity-app").
 
-3. run / build the app:
-    - if you want to use webcam of laptop (NO external device)
-      * change argument 1 to 0 in:
-            - camera_calibration.62
-            - arucreate.58
+## Prequisites
+### Python Modules
+The game is written in Python and requires a number of Python packages which can be installed via the `pip` command in a terminal of your choosing:
+* [numpy]("https://pypi.org/project/numpy/")
+* [paho-mqtt]("https://pypi.org/project/paho-mqtt/")
+* [adafruit_pca9685]("https://pypi.org/project/adafruit-circuitpython-pca9685/")
+* [board]("https://pypi.org/project/board/)
+* [websocket-client]("https://pypi.org/project/websocket-client/")
+* OpenCV (v3.4.13): Python Binding is required. Follow [this]("https://www.pyimagesearch.com/2017/09/04/raspbian-stretch-install-opencv-3-python-on-your-raspberry-pi/") guide on how to build OpenCV Python binding for Raspberry Pi
+* [picamera]("https://pypi.org/project/picamera/"): should be installed via `pip install picamera[array]` to be utilized with OpenCV. 
+* [blinker]("https://pypi.org/project/blinker/")
+* [PyCmdMessenger]("https://pypi.org/project/PyCmdMessenger/")
+* [bluepy]("https://pypi.org/project/bluepy/")
 
-    - initiate game:
-      * use "camera_calibration.fast_calibrate()", if calibration images with respective cam are already saved in "_calibration" folder (Intel RealSense)
-      * use "camera_calibration.calibrate()", if calibration needs to be done completely (i.e., new camera, no images saved in "_calibration" folder)
-      * change value set_marker_width, if you choose a different charuco board (width of printed aruco markers on chessboard)
-      * choose your own game_duration (length of pursuit)
-      * choose your own sleep_time: waiting intervall until next aruco marker detection
-      
-## Raspberry Pi
-Since we're using a virtual environment you have to enter the following commands before running any python files, otherwise it won't find the required modules:
-~~~
+### Raspberry Pi
+Raspberry Pi OS must be configured in order for the used interfaces to work correctly. To do this, open a terminal and enter:
+
+`sudo raspi-config`
+
+Next use the arrow keys to navigate to Interfacing Options and hit Enter. Here, the following two interfaces must be enabled:
+1. I2C
+2. Camera
+
+## Usage
+* If using a virtual Python environment, make sure to switch to that beforehand. Useful commands are:
+
+```
 source ~/.profile
-workon cv
-~~~
+workon your_environment
+```
+* To run in debug mode, use the following command:
+```
+python police-chase.py
+```` 
+* To run in a headless mode, use the following command:
+```
+python police-chase.py headless
+```
 
-You should then see:
-~~~
-(cv) pi@raspberrypi: ~/
-~~~
+## License
+Distributed under the MIT License. See `LICENSE` for more information.
 
-For bluepy to work correctly the following commands maybe also have to be executed:
-~~~
-sudo hciconfig hci0 down
-sudo hciconfig hci0 up
-~~~
-
-
+## Contact
+James Gay - james.gay@hs-offenburg.de
