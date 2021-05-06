@@ -22,7 +22,7 @@ The following video gives a brief overview of the game.
 [![Keep Your Distance Overview Video](http://img.youtube.com/vi/bwPG-lzKVoc/0.jpg)](https://www.youtube.com/watch?v=bwPG-lzKVoc)
 
 ## Publications
-* James Gay, Moritz Umfahrer, Arthur Theil, Lea Buchweitz, Eva Lindell, Li Guo, Nils-Krister Persson, and Oliver Korn. 2020. Keep Your Distance: A Playful Haptic Navigation Wearable for Individuals with Deafblindness. The 22nd International ACM SIGACCESS Conference on Computers and Accessibility. Association for Computing Machinery, New York, NY, USA, Article 93, 1–4. DOI: https://doi.org/10.1145/3373625.3418048
+* James Gay, Moritz Umfahrer, Arthur Theil, Lea Buchweitz, Eva Lindell, Li Guo, Nils-Krister Persson, and Oliver Korn. 2020. Keep Your Distance: A Playful Haptic Navigation Wearable for Individuals with Deafblindness. The 22nd International ACM SIGACCESS Conference on Computers and Accessibility. Association for Computing Machinery, New York, NY, USA, Article 93, 1–4. DOI: [https://doi.org/10.1145/3373625.3418048](https://doi.org/10.1145/3373625.3418048)
 
 ## Contributors
 * Lea Buchweitz
