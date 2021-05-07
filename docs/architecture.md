@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Systems
-nav_order: 4
+title: Architecture
+nav_order: 3
 ---
 # Architecture
 This page goes into detail about the architecture of the game.
