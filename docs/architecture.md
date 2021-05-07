@@ -6,6 +6,10 @@ nav_order: 4
 # Architecture
 This page goes into detail about the architecture of the game.
 ## Game-Loop
+The game loop can be found in the `police-chase.py` file. The following diagram gives an overview of application:
+
+<img src="{{site.baseurl}}/assets/images/game-loop.png" />
+
 ## State Machine
 ## Systems
 The game is made up of various systems, each responsible for a certain aspect of the game logic. Each of these systems are updated once per frame. The following table gives an overview of these systems and which role they play.
@@ -18,5 +22,6 @@ The game is made up of various systems, each responsible for a certain aspect of
 |MarkerTransformationSystem|The marker transformation system retrieves the current detected markers and calculates its translation and forward vector.|
 |ProgressRequestSystem|The progress request system detects if a button press was detected on the configured gpio pin. If so, it triggers a change in the state machine.|
 |ProximityConditionSystem|The proximity condition system takes care of detecting whether the suspect is a so called "danger zone". The agent is considered to be in a danger zone when the wearer of the haptic wearable is too close or too far from the average position of all detected markers.|
+|StateMachine|Updates the current state of the state machine.|
 |TargetLookAtSystem|The target look at system tracks whether the suspect is facing the agent. This occurs when the designated "front" marker (see [Configuration](configuration.md)) is facing the camera in a given threshold. If this occurs a response is triggered on the haptic wearable.|
 |VibrationNavigationSystem|The vibration navigation system is responsible for guiding the agent in the direction of the suspect. It also provides information via differing frequency levels whether the agent is in an *optimal* distance to the suspect.|
