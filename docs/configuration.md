@@ -8,7 +8,7 @@ nav_order: 3
 The `config.json` file contains a list of settings. The following table gives a description of each parameter.
 
 |Parameter|Value type|Description|
-|---------|----------|-----------|
+|---------|:----------:|-----------|
 |actuatorRanges|array|Determines which motors get activated when the angle between the marker and wearer gets calculated. These motors determine the direction the wearer of the haptic wearable should move towards.|
 |arucoDictionary|int|Which set of aruco markers get detected. View OpenCV documentation for further details. |
 |button_gpio_pin|int|Which gpio pin on the Raspberry Pi is used to receive push button events.|
