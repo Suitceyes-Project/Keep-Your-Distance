@@ -8,7 +8,7 @@ This page goes into detail about the architecture of the game.
 ## Game-Loop
 The game loop can be found in the `police-chase.py` file. The following diagram gives an overview of application:
 
-<img src="{{site.baseurl}}/assets/images/game-loop.png" />
+<img src="{{site.baseurl}}/assets/images/game-loop.png" width="300" />
 
 ## State Machine
 ## Systems
