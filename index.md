@@ -15,7 +15,7 @@ The application uses a wide-angle camera to track ArUco markers which represent 
 * Varying frequency levels of vibration (quicker pulses mean the agent is getting too close to the suspect, slower pulses mean the agent is too far from the suspect)
 
 * Local vibrations on the tactile belt of the haptic wearable: These indicate the direction the wearer must move towards in order to follow the suspect.
-We use a Wizard of Oz style application to provide signals to the user, e.g., when the agent can catch the suspect. This application can be found [here]().
+We use a Wizard of Oz style application to provide signals to the user, e.g., when the agent can catch the suspect. This application can be found [here](https://github.com/AffectiveCognitiveInstitute/Keep-Your-Distance-Unity-App).
 
 The following video gives a brief overview of the game.
 
@@ -25,9 +25,15 @@ The following video gives a brief overview of the game.
 * James Gay, Moritz Umfahrer, Arthur Theil, Lea Buchweitz, Eva Lindell, Li Guo, Nils-Krister Persson, and Oliver Korn. 2020. Keep Your Distance: A Playful Haptic Navigation Wearable for Individuals with Deafblindness. The 22nd International ACM SIGACCESS Conference on Computers and Accessibility. Association for Computing Machinery, New York, NY, USA, Article 93, 1–4. DOI: [https://doi.org/10.1145/3373625.3418048](https://doi.org/10.1145/3373625.3418048)
 
 ## Contributors
-* Lea Buchweitz
-* James Gay
-* Moritz Umfahrer
+The following individuals made contributions to the Keep Your Distance game:
+
+**Concept**: Arthur Theil, James Gay, Lea Buchweitz, Moritz Umfahrer
+
+**Programming**: Lea Buchweitz, James Gay
+
+**Hardware**: James Gay, Moritz Umfahrer
+
+**Textile**: Eva Lindell, Li Gui, Nils-Krister Persson
 
 ## Authors
 * James Gay
