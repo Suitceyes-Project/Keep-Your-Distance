@@ -6,11 +6,5 @@ For full documentation about the application, features and installation, please 
 ## License
 Distributed under the MIT License. See [`LICENSE`](LICENSE) for more information.
 
-## Contributors
-* Lea Buchweitz
-* James Gay
-* Arthur Theil
-* Moritz Umfahrer
-
 ## Author
 James Gay - james.gay@hs-offenburg.de
