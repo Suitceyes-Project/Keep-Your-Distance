@@ -33,7 +33,7 @@ The following individuals made contributions to the Keep Your Distance game:
 
 **Hardware**: James Gay, Moritz Umfahrer
 
-**Textile**: Eva Lindell, Li Gui, Nils-Krister Persson
+**Textile**: Eva Lindell, Li Guo, Nils-Krister Persson
 
 ## Authors
 * James Gay
