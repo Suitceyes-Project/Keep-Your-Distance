@@ -17,7 +17,7 @@ The application uses a wide-angle camera to track ArUco markers which represent 
 * Local vibrations on the tactile belt of the haptic wearable: These indicate the direction the wearer must move towards in order to follow the suspect.
 We use a Wizard of Oz style application to provide signals to the user, e.g., when the agent can catch the suspect. This application can be found [here](https://github.com/AffectiveCognitiveInstitute/Keep-Your-Distance-Unity-App).
 
-The following video gives a brief overview of the game.
+The following video gives a brief overview of the game. 
 
 [![Keep Your Distance Overview Video](http://img.youtube.com/vi/bwPG-lzKVoc/0.jpg)](https://www.youtube.com/watch?v=bwPG-lzKVoc)
 
